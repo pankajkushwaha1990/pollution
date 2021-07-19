@@ -89,7 +89,7 @@
                                     <div class="modal-footer clearfix">
                                        <!--  <div class="float-left"><a href="javascript:void(0);" class="btn-lg btn btn-link">Recover Password</a></div> -->
                                         <div class="float-right">
-                                            <button style="display: none;" type="submit" class="btn submit_button btn-primary btn-lg">Login to Dashboard</button>
+                                            <button  type="submit" class="btn submit_button btn-primary btn-lg">Login to Dashboard</button>
                                         </div>
                                     </div>
                                   </form>

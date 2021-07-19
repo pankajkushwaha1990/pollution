@@ -26,11 +26,11 @@
 <body>
 <div class="app-container app-theme-gray">
         <div class="app-main">
-            @include('admin.left_sidebar')
+            @include('Admin.left_sidebar')
             <div class="app-sidebar-overlay d-none animated fadeIn"></div>
             <div class="app-main__outer">
                 <div class="app-main__inner">
-                  @include('admin.header')
+                  @include('Admin.header')
                     <div class="app-inner-layout app-inner-layout-page">
                        
                         <div class="app-inner-layout__wrapper">
@@ -437,7 +437,7 @@
                         </div>
                     </div>
                 </div>
-                @include('admin.footer')
+                @include('Admin.footer')
 
             </div>
         </div>

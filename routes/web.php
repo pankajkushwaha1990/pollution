@@ -33,7 +33,39 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 	Route::post('/tenure-fee-details-submit',[AdminController::class,  'tenure_fee_details_submit'])->name('tenure_fee_details_submit');
     Route::get('/fresh-cte-add',[AdminController::class,  'fresh_cte_add'])->name('fresh_cte_add');
     Route::get('/industry-id-to-category/{id}',[AdminController::class,  'industry_id_to_category'])->name('industry_id_to_category');    
-    Route::get('/fee-calculate',[AdminController::class,  'fee_calculate'])->name('fee_calculate');
+    Route::get('/fresh-cte-fee-calculate',[AdminController::class,  'fresh_cte_fee_calculate'])->name('fresh_cte_fee_calculate');
+
+    Route::get('/extension-cte-fee-calculate',[AdminController::class,  'extension_cte_fee_calculate'])->name('extension_cte_fee_calculate');
+
+	Route::get('/generated-cte-list',[AdminController::class,  'generated_cte_list'])->name('generated_cte_list');
+    Route::get('/fresh-cto-add',[AdminController::class,  'fresh_cto_add'])->name('fresh_cto_add');
+    // Route::get('/fee-calculate-cto',[AdminController::class,  'fee_calculate_cto'])->name('fee_calculate_cto');
+
+    Route::get('/fresh-cte-add-page',[AdminController::class,  'fresh_cte_add_page'])->name('fresh_cte_add_page');
+    Route::get('/extension-cte-add-page',[AdminController::class,  'extension_cte_add_page'])->name('extension_cte_add_page');
+
+    Route::get('/fresh-cto-add-page',[AdminController::class,  'fresh_cto_add_page'])->name('fresh_cto_add_page');
+    Route::get('/fresh-cto-fee-calculate',[AdminController::class,  'fresh_cto_fee_calculate'])->name('fresh_cto_fee_calculate');
+
+    Route::get('/extension-cto-add-page',[AdminController::class,  'extension_cto_add_page'])->name('extension_cto_add_page');
+
+    Route::get('/industry-id-to-category-cto/{id}',[AdminController::class,  'industry_id_to_category_cto'])->name('industry_id_to_category_cto');
+    Route::get('/extension-cto-fee-calculate',[AdminController::class,  'extension_cto_fee_calculate'])->name('extension_cto_fee_calculate');    
+
+    Route::get('/ajax-extension-cto-penalty-check',[AdminController::class,  'ajax_extension_cto_penalty_check'])->name('ajax_extension_cto_penalty_check');    
+     Route::get('/fresh-cte-pdf/{id}/{pdf?}',[AdminController::class,  'fresh_cte_pdf'])->name('fresh_cte_pdf');
+
+     Route::get('/generated-extension-cte-list',[AdminController::class,  'generated_extension_cte_list'])->name('generated_extension_cte_list');
+     Route::get('/extension-cte-pdf/{id}/{pdf?}',[AdminController::class,  'extension_cte_pdf'])->name('extension_cte_pdf');
+     Route::get('/export',[AdminController::class,  'export'])->name('export');
+
+
+
+    
+
+
+
+
 
 
 

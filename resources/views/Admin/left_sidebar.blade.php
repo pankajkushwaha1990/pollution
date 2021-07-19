@@ -69,6 +69,21 @@
                                                 </i>Fresh CTE
                                             </a>
                                         </li>
+
+                                        <li>
+                                            <a href="{{ route('generated_cte_list') }}">
+                                                <i class="metismenu-icon pe-7s-graph">
+                                                </i>Generated CTE List
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a href="{{ route('fresh_cto_add') }}">
+                                                <i class="metismenu-icon pe-7s-graph">
+                                                </i>Fresh CTO
+                                            </a>
+                                        </li>
+
                                        <!--  <li>
                                             <a href="{{ route('company_financial') }}">
                                                 <i class="metismenu-icon pe-7s-graph1">

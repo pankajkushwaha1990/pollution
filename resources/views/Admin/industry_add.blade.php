@@ -26,11 +26,11 @@
 <body>
 <div class="app-container app-theme-gray">
         <div class="app-main">
-            @include('admin.left_sidebar')
+            @include('Admin.left_sidebar')
             <div class="app-sidebar-overlay d-none animated fadeIn"></div>
             <div class="app-main__outer">
                 <div class="app-main__inner">
-                  @include('admin.header')
+                  @include('Admin.header')
                     <div class="app-inner-layout app-inner-layout-page">
                        
                         <div class="app-inner-layout__wrapper">
@@ -47,7 +47,7 @@
                                                         <div class="card-body"><h5 class="card-title">Add New Industries</h5>
                                                            
                                                             <div class="form-row">
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-4">
                                                                     <div class="position-relative form-group">
                                                                     <label for="exampleEmail11" class="">Industry Name</label>
                                                                     <input name="industry_name" id="industry_name" placeholder="Enter Industry Name" type="text"
@@ -58,7 +58,18 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="col-md-6">
+                                                                 <div class="col-md-4">
+                                                                    <div class="position-relative form-group">
+                                                                    <label for="exampleEmail11" class="">Industry Category Code</label>
+                                                                    <input name="industry_type" id="industry_type" placeholder="Enter Industry Category Code" type="text"
+                                                                                                         class="form-control" required="">
+                                                         @if($errors->has('industry_type'))
+                                                        <span class="text text-danger">{{ $errors->first('industry_type') }}</span>
+                                                        @endif
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-4">
                                                                     <div class="position-relative form-group">
                                                                     <label for="exampleEmail11" class="">Industry Category</label>
                                                                     <select name="industry_category" id="industry_category" class="form-control" required="">
@@ -76,11 +87,12 @@
                                                                     </div>
                                                                 </div>
 
+
                                                                                                                          
                                                             </div>
 
                                                             <div class="form-row">
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-4">
                                                                     <div class="position-relative form-group">
                                                                     <label for="exampleEmail11" class="">Email</label>
                                                                     <input name="industry_email" id="industry_email" placeholder="Enter Industry Email" type="email"
@@ -91,7 +103,7 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-4">
                                                                     <div class="position-relative form-group">
                                                                     <label for="exampleEmail11" class="">Mobile</label>
                                                                     <input name="industry_mobile" id="industry_mobile" placeholder="Enter Industry Mobile" type="number"
@@ -101,23 +113,7 @@
                                                         @endif
                                                                     </div>
                                                                 </div>
-
-                                                                                                                         
-                                                            </div>
-
-                                                             <div class="form-row">
-                                                                <div class="col-md-6">
-                                                                    <div class="position-relative form-group">
-                                                                    <label for="exampleEmail11" class="">Industry Category Code</label>
-                                                                    <input name="industry_type" id="industry_type" placeholder="Enter Industry Category Code" type="text"
-                                                                                                         class="form-control" required="">
-                                                         @if($errors->has('industry_type'))
-                                                        <span class="text text-danger">{{ $errors->first('industry_type') }}</span>
-                                                        @endif
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-4">
                                                                     <div class="position-relative form-group">
                                                                     <label for="exampleEmail11" class="">Industry Scale</label>
                                                                     <select name="industry_scale" id="industry_scale" class="form-control" required="">
@@ -135,6 +131,14 @@
                                                         @endif
                                                                     </div>
                                                                 </div>
+
+                                                                                                                         
+                                                            </div>
+
+                                                             <div class="form-row">
+                                                               
+
+                                                               
 
                                                                                                                          
                                                             </div>
@@ -209,16 +213,34 @@
                         </div>
                     </div>
                 </div>
-                @include('admin.footer')
+                @include('Admin.footer')
 
             </div>
         </div>
 </div>
 
 <div class="app-drawer-overlay d-none animated fadeIn"></div>
-<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script></body>
+<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</body>
 <script type="text/javascript">
-  
+  $(function(){
+    $('#industry_type').keyup(function(){
+        var current_code = $(this).val().substring(0, 1);
+        if(current_code=='1'){
+            $('#industry_category').val(1);
+        }else if(current_code=='2'){
+            $('#industry_category').val(3);
+
+        }else if(current_code=='3'){
+            $('#industry_category').val(4);
+
+        }else{
+            $('#industry_category').val('');
+        }
+    })
+  })
 </script>
 
 <!-- Mirrored from demo.dashboardpack.com/kero-html-sidebar-pro/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 13 May 2021 14:52:38 GMT -->
