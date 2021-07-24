@@ -4,11 +4,13 @@ tr:nth-child(even) {background-color: #c2c2c2;}
    table tr:nth-last-child(n+4) td {
     border: 1px solid black !important;
     color: black !important;
+    text-align: center;
 
    }
    table th {
     border: 1px solid black !important;
     color: black !important;
+    text-align: center;
 
 
    }
@@ -106,7 +108,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <thead class="bg-none bgc-default-tp1">
                         <tr class="text-white">
                             @foreach($table_head as $head)
-                            <th>{{ $head }}</th>
+                            <th style="text-align: center;">{{ $head }}</th>
                             @endforeach
                         </tr>
                     </thead>
@@ -115,12 +117,12 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         <tr></tr>                        
                         @foreach($table_rows as $detail)
                         <tr>
-                            <td>{{ $detail['sr_no'] }}</td>
-                            <td>{{ $detail['from_date'] }}</td>
-                            <td>{{ $detail['to_date'] }}</td>
-                            <td class="text-95">{{ $detail['days'] }}</td>
-                            <td class="text-secondary-d2">{{ $detail['ca_amount'] }}</td>
-                            <td class="text-secondary-d2">{{ $detail['cte_fees'] }}</td>
+                            <td style="text-align: center;">{{ $detail['sr_no'] }}</td>
+                            <td style="text-align: center;">{{ $detail['from_date'] }}</td>
+                            <td style="text-align: center;">{{ $detail['to_date'] }}</td>
+                            <td class="text-95" style="text-align: center;">{{ $detail['days'] }}</td>
+                            <td class="text-secondary-d2" style="text-align: center;">{{ money_format_change($detail['ca_amount']) }}</td>
+                            <td class="text-secondary-d2" style="text-align: center;">{{ money_format_change($detail['cte_fees']) }}</td>
                         </tr> 
                         @endforeach
                         <tr style="background-color: #c2c2c200;">
@@ -128,24 +130,24 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             <td ></td>
                             <td ></td>
                             <td class="text-95" ></td>
-                            <td class="text-secondary-d2"  ><b style="font-size: 18px;">Total Fee</b></td>
-                            <td class="text-secondary-d2" ><b style="font-size: 18px;">{{ $footer['total_cte_fee'] }}</b></td>
+                            <td class="text-secondary-d2"  style="text-align: center;"><b style="font-size: 18px;">Total Fee</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_cte_fee']) }}</b></td>
                         </tr> 
                         <tr style="background-color: #c2c2c200;">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-95"></td>
-                            <td class="text-secondary-d2" ><b style="font-size: 18px;">Deposited</b></td>
-                            <td class="text-secondary-d2"><b style="font-size: 18px;">{{ $footer['deposited_amount'] }}</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">Deposited</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['deposited_amount']) }}</b></td>
                         </tr> 
                          <tr style="background-color: #c2c2c200;">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-95"></td>
-                            <td class="text-secondary-d2" ><b style="font-size: 18px;">Total Payable Amount</b></td>
-                            <td class="text-secondary-d2"><b style="font-size: 18px;">{{ $footer['final_fee'] }}</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">Total Payable Amount</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_fee']) }}</b></td>
                         </tr> 
                     </tbody>
                 </table>

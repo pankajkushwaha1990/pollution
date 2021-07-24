@@ -283,6 +283,10 @@ class AdminController extends Controller{
     }
   }
 
+
+
+
+
   public function fresh_cte_fee_calculate(Request $request){
       $industry_id                = $request->industry_id;
       $industry_category_name     = $request->industry_category_name;
@@ -427,13 +431,13 @@ class AdminController extends Controller{
          return view('Admin.fresh_cte_calculation_pdf_page_view',$response);
   }
 
-  public function export(){
-    $response  = DB::table('reports')->where('id','35')->first();
+  public function export_fresh_cte($cte_id){
+    $response  = DB::table('reports')->where('id',$cte_id)->first();
     $response  = [
             'header'=>json_decode($response->header,true),'table_head'=>json_decode($response->table_head,true),
            'table_rows'=>json_decode($response->table_rows,true),'footer'=>json_decode($response->footer,true)
     ]; 
-    return Excel::download(new CteExport($response), 'export.xlsx');
+    return Excel::download(new CteExport($response), $response['header']['industry_name'].'.xlsx');
   }
 
 

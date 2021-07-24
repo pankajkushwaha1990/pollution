@@ -145,11 +145,14 @@ tr:nth-child(even) {background-color: #c2c2c2;}
    table tr:nth-last-child(n+4) td {
     border: 1px solid black !important;
     color: black !important;
+    text-align: center !important;
 
    }
    table th {
     border: 1px solid black !important;
     color: black !important;
+    text-align: center !important;
+
 
 
    }
@@ -158,12 +161,18 @@ tr:nth-child(even) {background-color: #c2c2c2;}
    }
    .text-default-d3,.align-middle,.text-blue {
     color: black !important;
+    text-align: center !important;
+
    }
    .text-default-d3 {
     font-size: 32px !important;
+    text-align: center !important;
+
    }
    .text-default-d3.company_text {
     font-weight: 600;
+    text-align: center !important;
+
    }
    .print_show{
     display: block;
@@ -288,7 +297,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <thead class="bg-none bgc-default-tp1">
                         <tr class="text-white">
                             @foreach($table_head as $head)
-                            <th>{{ $head }}</th>
+                            <th style="text-align: center;">{{ $head }}</th>
                             @endforeach
                         </tr>
                     </thead>
@@ -297,12 +306,12 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         <tr></tr>                        
                         @foreach($table_rows as $detail)
                         <tr>
-                            <td>{{ $detail['sr_no'] }}</td>
-                            <td>{{ $detail['from_date'] }}</td>
-                            <td>{{ $detail['to_date'] }}</td>
-                            <td class="text-95">{{ $detail['days'] }}</td>
-                            <td class="text-secondary-d2">{{ $detail['ca_amount'] }}</td>
-                            <td class="text-secondary-d2">{{ $detail['cte_fees'] }}</td>
+                            <td style="text-align: center;">{{ $detail['sr_no'] }}</td>
+                            <td style="text-align: center;">{{ $detail['from_date'] }}</td>
+                            <td style="text-align: center;">{{ $detail['to_date'] }}</td>
+                            <td class="text-95" style="text-align: center;">{{ $detail['days'] }}</td>
+                            <td class="text-secondary-d2" style="text-align: center;">{{ money_format_change($detail['ca_amount']) }}</td>
+                            <td class="text-secondary-d2" style="text-align: center;">{{ money_format_change($detail['cte_fees']) }}</td>
                         </tr> 
                         @endforeach
                         <tr style="background-color: #c2c2c200;">
@@ -310,24 +319,24 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             <td ></td>
                             <td ></td>
                             <td class="text-95" ></td>
-                            <td class="text-secondary-d2"  ><b style="font-size: 18px;">Total Fee</b></td>
-                            <td class="text-secondary-d2" ><b style="font-size: 18px;">{{ $footer['total_cte_fee'] }}</b></td>
+                            <td class="text-secondary-d2"  style="text-align: center;"><b style="font-size: 18px;">Total Fee</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_cte_fee']) }}</b></td>
                         </tr> 
                         <tr style="background-color: #c2c2c200;">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-95"></td>
-                            <td class="text-secondary-d2" ><b style="font-size: 18px;">Deposited</b></td>
-                            <td class="text-secondary-d2"><b style="font-size: 18px;">{{ $footer['deposited_amount'] }}</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">Deposited</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['deposited_amount']) }}</b></td>
                         </tr> 
                          <tr style="background-color: #c2c2c200;">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-95"></td>
-                            <td class="text-secondary-d2" ><b style="font-size: 18px;">Total Payable Amount</b></td>
-                            <td class="text-secondary-d2"><b style="font-size: 18px;">{{ $footer['final_fee'] }}</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">Total Payable Amount</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_fee']) }}</b></td>
                         </tr> 
                     </tbody>
                 </table>
@@ -349,8 +358,9 @@ tr:nth-child(even) {background-color: #c2c2c2;}
             </div>
         </div>
         <div class="row">
-                <div class="col-md-8"></div>
+                <div class="col-md-6"></div>
                 <div class="col-md-2"><button style="width: 100%;" id="print_button" class="btn btn-success">Print</button></div>
+                <div class="col-md-2"><a href="{{ route('export_fresh_cte',['id'=>$id]) }}"><button style="width: 100%;" id="save_cte" class="btn btn-success">Excel</button></a></div>
                 <div class="col-md-2"><a href="{{ route('fresh_cte_pdf',['id'=>$id,'pdf'=>'true']) }}"><button style="width: 100%;" id="save_cte" class="btn btn-warning">PDF</button></a></div>
         </div>
     </div>

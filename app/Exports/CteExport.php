@@ -22,6 +22,7 @@ class CteExport implements FromCollection,WithStyles{
     {
         return collect([
             [
+                'AA'=>'',
                 'Supreme Allied Industry' => $this->response['header']['industry_name'],
             ],
             [
@@ -75,7 +76,7 @@ class CteExport implements FromCollection,WithStyles{
             'B2' => ['font' => ['italic' => true]],
 
             // Styling an entire column.
-            // 'C'  => ['font' => ['size' => 16]],
+            'A'  => ['width' => 100],
         ];
     }
 }

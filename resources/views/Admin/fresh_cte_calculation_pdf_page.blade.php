@@ -2,12 +2,15 @@
    .table tr:nth-last-child(n+5) td {
     border: 1px solid black !important;
     color: black !important;
+    text-align: center !important;
    
 
    }
    .table tr {
     border: 1px solid black !important;
     color: black !important;
+    text-align: center !important;
+
    
 
 
@@ -72,8 +75,8 @@ border-spacing: 0px;
 	    <td >{{ $detail['from_date'] }}</td>
 	    <td >{{ $detail['to_date'] }}</td>
 	    <td >{{ $detail['days'] }}</td>
-	    <td >{{ $detail['ca_amount'] }}</td>
-	    <td >{{ $detail['cte_fees'] }}</td>
+	    <td >{{ money_format_change($detail['ca_amount']) }}</td>
+	    <td >{{ money_format_change($detail['cte_fees']) }}</td>
 	</tr> 
 	@endforeach
 	<tr>
@@ -84,17 +87,17 @@ border-spacing: 0px;
 	<tr>
 		<td colspan="4">&nbsp;</td>
 		<td align="right"><b>Total Fee</b></td>
-		<td align="right"><b>{{ $footer['total_cte_fee'] }}</b></td>
+		<td align="right"><b>{{ money_format_change($footer['total_cte_fee']) }}</b></td>
 	</tr>
 	<tr>
 		<td colspan="4">&nbsp;</td>
 		<td align="right"><b>Deposited</b></td>
-		<td align="right"><b>{{ $footer['deposited_amount'] }}</b></td>
+		<td align="right"><b>{{ money_format_change($footer['deposited_amount']) }}</b></td>
 	</tr>
 	<tr>
 		<td colspan="4">&nbsp;</td>
 		<td align="right"><b>Total Payable Amount</b></td>
-		<td class="gray" align="right"><b>{{ $footer['final_fee'] }}</b></td>
+		<td class="gray" align="right"><b>{{ money_format_change($footer['final_fee']) }}</b></td>
 	</tr>
 </tbody>
 </table>
