@@ -1409,6 +1409,7 @@ class AdminController extends Controller{
    $total_cto_air_fee = 0;
    $total_noc_fee     = 0;
    $penalty_ca_old    = 0;
+   $air_regu_fee      = 0;
    $run               = 1;
    for ($i=0; $i < $run; $i++) {
     if(strtotime($to_date)<=strtotime($end_date)){
@@ -1434,11 +1435,12 @@ class AdminController extends Controller{
       $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
       $total_cto_air_fee   += $this->fee_by_days($fees,$days);
       $total_noc_fee       += $this->fee_by_days($noc_fee,$days);
+      $air_regu_fee       += $this->fee_by_days($noc_fee,$days);
       $run++; 
     }      
    }
    $final_cto_air_fee   = $total_cto_air_fee-$request->deposited_air_amount;
-   $payable_amount      = $final_cto_air_fee+$total_noc_fee;
+   $payable_amount      = $final_cto_air_fee+$total_noc_fee+$air_regu_fee;
 
    
    $header = [
@@ -1456,7 +1458,7 @@ class AdminController extends Controller{
         
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
-            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','air_regu_fee'=>'exist',
+            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','air_regu_fee'=>$air_regu_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Air FEE(Regu)','CTO Air Fee'];
@@ -1477,6 +1479,7 @@ class AdminController extends Controller{
    $total_cto_water_fee = 0;
    $total_noc_fee     = 0;
    $total_cto_air_fee = 0;
+   $water_regu_fee      = 0;
    $run           = 1;
    for ($i=0; $i < $run; $i++) {
     if(strtotime($to_date)<=strtotime($end_date)){
@@ -1503,11 +1506,12 @@ class AdminController extends Controller{
       $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
       $total_cto_water_fee += $this->fee_by_days($fees,$days);
       $total_noc_fee       += $this->fee_by_days($noc_fee,$days);
+      $water_regu_fee       += $this->fee_by_days($noc_fee,$days);
       $run++;  
     }      
    }
    $final_cto_water_fee = $total_cto_water_fee-$request->deposited_water_amount;
-   $payable_amount      = $final_cto_water_fee+$total_noc_fee;
+   $payable_amount      = $final_cto_water_fee+$total_noc_fee+$water_regu_fee;
   
 
    
@@ -1529,7 +1533,7 @@ class AdminController extends Controller{
             'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'final_cto_water_fee'=>$final_cto_water_fee,'total_cto_water_fee'=>$total_cto_water_fee,
             'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
-            'ca_diffrence'=>'exist','noc_fee'=>'exist','water_regu_fee'=>'exist',
+            'ca_diffrence'=>'exist','noc_fee'=>'exist','water_regu_fee'=>$water_regu_fee,
           ];
           $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Water FEE(Regu)','CTO Water Fee'];
     
@@ -1551,6 +1555,8 @@ class AdminController extends Controller{
    $total_cto_water_fee = 0;
    $total_cto_air_fee = 0;
    $total_noc_fee = 0;
+   $air_regu_fee = 0;
+   $water_regu_fee = 0;
    $run           = 1;
    for ($i=0; $i < $run; $i++) {
     if(strtotime($to_date)<=strtotime($end_date)){
@@ -1580,11 +1586,13 @@ class AdminController extends Controller{
       $total_cto_water_fee += $this->fee_by_days($fees,$days);
      $total_cto_air_fee   += $this->fee_by_days($fees,$days); 
      $total_noc_fee   += $this->fee_by_days($noc_fee,$days); 
+     $water_regu_fee   += $this->fee_by_days($noc_fee,$days); 
+     $air_regu_fee   += $this->fee_by_days($noc_fee,$days); 
     }      
    }
    $final_cto_water_fee = $total_cto_water_fee-$request->deposited_water_amount;
    $final_cto_air_fee   = $total_cto_air_fee-$request->deposited_air_amount;
-   $payable_amount      = $final_cto_water_fee+$final_cto_air_fee+$total_noc_fee;
+   $payable_amount      = $final_cto_water_fee+$final_cto_air_fee+$total_noc_fee+$water_regu_fee+$air_regu_fee;
 
    
    $header = [
@@ -1604,7 +1612,7 @@ class AdminController extends Controller{
             'deposited_air_amount'=>$request->deposited_air_amount,'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'total_cto_water_fee'=>$total_cto_water_fee,'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_water_fee'=>$final_cto_water_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'ca_diffrence'=>'exist','noc_fee'=>'exist',
-            'water_regu_fee'=>'exist','air_regu_fee'=>'exist','total_noc_fee'=>$total_noc_fee
+            'water_regu_fee'=>$water_regu_fee,'air_regu_fee'=>$air_regu_fee,'total_noc_fee'=>$total_noc_fee
           ];
           $table_head = [
             '#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Water FEE(Regu)','CTO Water Fee',
@@ -1863,6 +1871,7 @@ class AdminController extends Controller{
    $total_cto_air_fee = 0;
    $total_noc_fee     = 0;
    $penalty_ca_old    = 0;
+   $air_regu_fee    = 0;
    $run               = 1;
    for ($i=0; $i < $run; $i++) {
     if(strtotime($to_date)<=strtotime($end_date)){
@@ -1888,11 +1897,12 @@ class AdminController extends Controller{
       $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
       $total_cto_air_fee   += $this->fee_by_days($fees,$days);
       $total_noc_fee       += $this->fee_by_days($noc_fee,$days);
+      $air_regu_fee       += $this->fee_by_days($noc_fee,$days);
       $run++; 
     }      
    }
    $final_cto_air_fee   = $total_cto_air_fee-$request->deposited_air_amount;
-   $payable_amount      = $final_cto_air_fee+$total_air_penalty+$total_noc_fee;
+   $payable_amount      = $final_cto_air_fee+$total_air_penalty+$total_noc_fee+$air_regu_fee;
 
    
    $header = [
@@ -1911,7 +1921,7 @@ class AdminController extends Controller{
         
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
-            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','air_regu_fee'=>'exist',
+            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','air_regu_fee'=>$air_regu_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
             'penalty_days'=>'exist','total_air_penalty'=>$total_air_penalty
         ];
@@ -1937,6 +1947,7 @@ class AdminController extends Controller{
    $total_cto_water_fee = 0;
    $total_noc_fee     = 0;
    $penalty_ca_old    = 0;
+   $water_regu_fee    = 0;
    $run               = 1;
    for ($i=0; $i < $run; $i++) {
     if(strtotime($to_date)<=strtotime($end_date)){
@@ -1962,11 +1973,12 @@ class AdminController extends Controller{
       $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
       $total_cto_water_fee   += $this->fee_by_days($fees,$days);
       $total_noc_fee       += $this->fee_by_days($noc_fee,$days);
+      $water_regu_fee       += $this->fee_by_days($noc_fee,$days);
       $run++; 
     }      
    }
    $final_cto_water_fee   = $total_cto_water_fee-$request->deposited_water_amount;
-   $payable_amount      = $final_cto_water_fee+$total_water_penalty+$total_noc_fee;
+   $payable_amount      = $final_cto_water_fee+$total_water_penalty+$total_noc_fee+$water_regu_fee;
 
    
    $header = [
@@ -1984,8 +1996,8 @@ class AdminController extends Controller{
             ];
         
         $footer    = [
-            'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
-            'total_cto_water_fee'=>$total_cto_water_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','water_regu_fee'=>'exist',
+            'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
+            'total_cto_water_fee'=>$total_cto_water_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','water_regu_fee'=>$water_regu_fee,
             'final_cto_water_fee'=>$final_cto_water_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
             'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty
         ];
@@ -2013,6 +2025,8 @@ class AdminController extends Controller{
    $total_cto_air_fee = 0;
    $total_noc_fee     = 0;
    $penalty_ca_old    = 0;
+   $water_regu_fee    = 0;
+   $air_regu_fee    = 0;
    $run               = 1;
    for ($i=0; $i < $run; $i++) {
     if(strtotime($to_date)<=strtotime($end_date)){
@@ -2041,12 +2055,14 @@ class AdminController extends Controller{
       $total_cto_air_fee   += $this->fee_by_days($fees,$days);
       $total_cto_water_fee   += $this->fee_by_days($fees,$days);
       $total_noc_fee       += $this->fee_by_days($noc_fee,$days);
+      $water_regu_fee       += $this->fee_by_days($noc_fee,$days);
+      $air_regu_fee       += $this->fee_by_days($noc_fee,$days);
       $run++; 
     }      
    }
    $final_cto_air_fee     = $total_cto_air_fee-$request->deposited_air_amount;
    $final_cto_water_fee   = $total_cto_water_fee-$request->deposited_water_amount;
-   $payable_amount        = $final_cto_air_fee+$final_cto_water_fee+$total_water_penalty+$total_air_penalty+$total_noc_fee;
+   $payable_amount        = $final_cto_air_fee+$final_cto_water_fee+$total_water_penalty+$total_air_penalty+$total_noc_fee+$water_regu_fee+$air_regu_fee;
 
    
    $header = [
@@ -2065,8 +2081,8 @@ class AdminController extends Controller{
             ];
         
         $footer    = [
-            'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
-            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','air_regu_fee'=>'exist','water_regu_fee'=>'exist',
+            'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,'deposited_water_amount'=>$request->deposited_water_amount,
+            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>$total_noc_fee,'air_regu_fee'=>$air_regu_fee,'water_regu_fee'=>$water_regu_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
             'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty,'total_air_penalty'=>$total_air_penalty,
             'total_cto_water_fee'=>$total_cto_water_fee,'final_cto_water_fee'=>$final_cto_water_fee
@@ -2169,30 +2185,41 @@ class AdminController extends Controller{
         if($start_date<$end_date){
           $expired  = TRUE;
         }
-        if(!empty($penalty_ca) && $concent_type=='air' && $expired==FALSE){
-          
+        if(!empty($penalty_ca) && $concent_type=='air' && $expired==FALSE){  
+        echo "a";        
           $response = $this->renew_cto_penalty_exist_air_calculation($request);
         }elseif(!empty($penalty_ca) && $concent_type=='water' && $expired==FALSE){
+          echo "b"; 
           $response = $this->renew_cto_penalty_exist_water_calculation($request);
         }elseif(!empty($penalty_ca) && $concent_type=='both' && $expired==FALSE){
+          echo "c"; 
           $response = $this->renew_cto_penalty_exist_both_calculation($request);
         }elseif(empty($penalty_ca) && $concent_type=='air' && $expired==FALSE){
+          echo "d"; 
           $response = $this->renew_cto_no_change_air_calculation($request);
         }elseif(empty($penalty_ca) && $concent_type=='water' && $expired==FALSE){
+          echo "e"; 
           $response = $this->renew_cto_no_change_water_calculation($request);
         }elseif(empty($penalty_ca) && $concent_type=='both' && $expired==FALSE){
+          echo "f"; 
           $response = $this->renew_cto_no_change_both_calculation($request);
         }elseif(empty($penalty_ca) && $concent_type=='air' && $expired==TRUE){
+          echo "g"; 
           $response = $this->renew_cto_no_change_air_expired_calculation($request);
         }elseif(empty($penalty_ca) && $concent_type=='water' && $expired==TRUE){
+          echo "h"; 
           $response = $this->renew_cto_no_change_water_expired_calculation($request);
         }elseif(empty($penalty_ca) && $concent_type=='both' && $expired==TRUE){
+          echo "i"; 
           $response = $this->renew_cto_no_change_both_expired_calculation($request);
         }elseif(!empty($penalty_ca) && $concent_type=='air' && $expired==TRUE){
+          echo "j"; 
           $response = $this->renew_cto_penalty_exist_air_expired_calculation($request);
         }elseif(!empty($penalty_ca) && $concent_type=='water' && $expired==TRUE){
+          echo "k"; 
           $response = $this->renew_cto_penalty_exist_water_expired_calculation($request);
         }elseif(!empty($penalty_ca) && $concent_type=='both' && $expired==TRUE){
+          echo "l"; 
           $response = $this->renew_cto_penalty_exist_both_expired_calculation($request);
         }
       }
