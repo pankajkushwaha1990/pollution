@@ -84,6 +84,13 @@
                                             </a>
                                         </li>
 
+                                        <li>
+                                            <a href="{{ route('generated_cto_list') }}">
+                                                <i class="metismenu-icon pe-7s-graph">
+                                                </i>Generated CTO List
+                                            </a>
+                                        </li>
+
                                        <!--  <li>
                                             <a href="{{ route('company_financial') }}">
                                                 <i class="metismenu-icon pe-7s-graph1">

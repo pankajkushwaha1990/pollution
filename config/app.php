@@ -2,7 +2,7 @@
 
 function money_format_change($num){
     $explrestunits = "" ;
-    if(strlen($num)>3){
+    if(strlen($num)>3 && $num>999){
         $lastthree = substr($num, strlen($num)-3, strlen($num));
         $restunits = substr($num, 0, strlen($num)-3); // extracts the last three digits
         $restunits = (strlen($restunits)%2 == 1)?"0".$restunits:$restunits; // explodes the remaining digits in 2's formats, adds a zero in the beginning to maintain the 2's grouping.

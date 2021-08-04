@@ -65,7 +65,7 @@
                                             <div class="card-header-tab card-header">
                                                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
                                                     <i class="header-icon lnr-laptop-phone mr-3 text-muted opacity-6"> </i>
-                                                    Generated CTE List
+                                                    Generated CTO List
                                                 </div>
 
                                                 <div class="btn-actions-pane-right actions-icon-btn">
@@ -121,13 +121,13 @@
                                                         <tr>
                                                            <td>{{ ucfirst($report->industry_name) }}</td>
                                                            <td>{{ ucfirst($report->fee_type) }}</td>
-                                                           <td>{{ date('d/m/Y',strtotime($report->applied_on)) }}</td>
-                                                           <td>{{ money_format_change($report->total_cte_fee) }}</td>
-                                                           <td>{{ money_format_change($report->current_ca) }}</td>
+                                                           <td>{{ date('d/m/Y',strtotime($report->applied_on_view)) }}</td>
+                                                           <td>{{ money_format_change($report->total_cto_air_fee) }}</td>
+                                                           <td>{{ money_format_change($report->new_ca_convert) }}</td>
                                                            <td>{{ ucfirst($report->duration) }}</td>
-                                                           <td>{{ date('d/m/Y',strtotime($report->valid_upto)) }}
+                                                           <td>{{ date('d/m/Y',strtotime($report->applied_on_view)) }}
                                                            </td>
-                                                           <td> <a href="{{ route('fresh_cte_pdf',['id'=>$report->id]) }}"><button class="btn btn-info btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i></button></a>&nbsp;&nbsp;<a href="{{ route('fresh_cte_pdf',['id'=>$report->id,'pdf'=>'true']) }}"><button class="btn btn-danger btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-pdf-o"></i></button></a>&nbsp;&nbsp;<a href="{{ route('export_fresh_cte',['id'=>$report->id]) }}"><button class="btn btn-success btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-excel-o"></i></button></a></td>
+                                                           <td> <a href="{{ route('renew_cto_pdf',['id'=>$report->id]) }}"><button class="btn btn-info btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i></button></a>&nbsp;&nbsp;<a href="{{ route('fresh_cte_pdf',['id'=>$report->id,'pdf'=>'true']) }}"><button class="btn btn-danger btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-pdf-o"></i></button></a>&nbsp;&nbsp;<a href="{{ route('export_fresh_cte',['id'=>$report->id]) }}"><button class="btn btn-success btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-excel-o"></i></button></a></td>
                                                           
                                                          </tr>
                                                     @empty

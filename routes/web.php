@@ -59,6 +59,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
      Route::get('/extension-cte-pdf/{id}/{pdf?}',[AdminController::class,  'extension_cte_pdf'])->name('extension_cte_pdf');
      Route::get('/export_fresh_cte/{id}',[AdminController::class,  'export_fresh_cte'])->name('export_fresh_cte');
 
+     Route::get('/fresh-extension-pdf/{id}/{pdf?}',[AdminController::class,  'fresh_extension_pdf'])->name('fresh_extension_pdf');
+
+    Route::get('/export_fresh_extension/{id}',[AdminController::class,  'export_fresh_extension'])->name('export_fresh_extension');
+
+    Route::get('/renew-cto-calculate',[AdminController::class,  'renew_cto_fee_calculate'])->name('renew_cto_fee_calculate');
+
+	Route::get('/generated-cto-list',[AdminController::class,  'generated_cto_list'])->name('generated_cto_list');
+	 Route::get('/renew-cto-pdf/{id}/{pdf?}',[AdminController::class,  'renew_cto_pdf'])->name('renew_cto_pdf');
 
 
     

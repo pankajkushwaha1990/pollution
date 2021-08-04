@@ -234,6 +234,10 @@ hr {
 </body>
 <script type="text/javascript">
     $(document).ready(function(){
+    $.ajax({url: "{{ url('admin/fresh-cte-add-page') }}", success: function(result){
+                     $('#calculation_result_here').html('');
+                     $('#ajax_cte_add_page_here').html(result);
+    }});
       $('.cte_type').click(function(){
             var cte_type = $(".cte_type:checked").val();
             if(cte_type=='extension'){

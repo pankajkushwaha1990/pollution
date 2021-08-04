@@ -46,8 +46,14 @@
             </div>
             <div class="col-md-6">
                 <div class="position-relative form-group">
-                <label for="exampleEmail11" class="">Revised CA</label>
-                <input name="new_ca"  id="new_ca" placeholder="Enter Current CA" type="number" class="form-control" required="">
+                <label for="exampleEmail11" class="">Revised CA &nbsp; &nbsp;  &nbsp; 
+            <div id="radioBtn" class="btn-group">
+              <a class="btn btn-default btn-sm  currency_format" format='num'  data-toggle="fun" data-title="Y">Num</a>
+              <a class="btn btn-default btn-sm active currency_format" format='lac' style="background-color: #18b3ef;" data-toggle="fun" data-title="X">Lac</a>
+              <a class="btn btn-default btn-sm notActive currency_format" format='cr' data-toggle="fun" data-title="N">CR</a>
+            </div>
+            <input type="hidden" name="fun" id="fun"></label>
+                <input name="new_ca"  id="new_ca" placeholder="Enter Current CA" type="text" class="form-control" required="">
                 </div>
             </div>
         </div>
@@ -105,13 +111,11 @@
            <div class="form-row">
             <div class="col-md-10"></div>
 
-            <div class="col-md-1">
-               
-            </div>
+           
 
-             <div class="col-md-1">
+             <div class="col-md-2">
                 <div class="position-relative form-group">
-                 <button type="submit" value="calculate" id="calculate_2" class="btn btn-success">Calculate</button>
+                 <button style="width: 100%;" type="submit" value="calculate" id="calculate_2" class="btn btn-success">Calculate</button>
                 </div>
             </div>
         </div>
@@ -137,6 +141,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+  $('.convert_fields').keyup(function(){
+     var current_value = $(this).val();
+     $(this).attr('original_value',current_value);
+  })
+</script>
+
+<script type="text/javascript">
+  var format = $('.currency_format.active').attr('format');
+  $('.currency_format').click(function(){
+      $('.currency_format').css('background-color','').removeClass('active');
+      $(this).css('background-color','#18b3ef').addClass('active');
+  })
+</script>
+
+<script type="text/javascript">
     $('#industry_id').change(function(){
             $('#save_2').hide();
             var industry_id = $('#industry_id').val();
@@ -147,7 +166,7 @@
                         $('#previous_category_id').val(result.data.id);
                         $('#new_category_id').val(result.data.id);
                         $('#previous_ca').val(result.report.current_ca);
-                        $('#new_ca').val(result.report.current_ca);
+                        $('#new_ca').val(result.report.current_ca/100000);
                         $('#previous_apply_date').val(result.report.applied_on.split("-").reverse().join("/"));
                         $('#current_apply_date').val(result.report.valid_upto.split("-").reverse().join("/"));
                      }
@@ -157,11 +176,13 @@
 <script type="text/javascript">
   $('#myForm').on('submit', function(e) {
       e.preventDefault(); // prevent native submit
+      var format = $('.currency_format.active').attr('format');
+      
       $(this).ajaxSubmit({
           success: function(response) {
             $('#calculation_result_here').html(response);
          },
-         data: { action: 'calculate'}
+         data: { action: 'calculate','format':format}
 
       })
   });

@@ -1,46 +1,26 @@
  <div class="main-card mb-3 card">
-                                                        <div class="card-body">
-                                                           
-                                                                <!-- <div class="divider"></div> -->
-
-                                                            
-
-                                                          
-                                                           
-                                                            <div class="form-row">
-                                                                <div class="col-md-12">
-                                                                    <div class="position-relative form-group">
-                                                                    <label for="exampleEmail11" class="">Industry Name</label>
-                                                                   
-
-                                                        <select name="industry_name" id="industry_name" class="form-control" required="">
-                                                                        <option value="">Select Industry</option>
-                                                                        @foreach($industry_list as $industry)
-                                                                        <option value="{{ $industry->id }}">{{ $industry->industry_name }} </option>
-
-                                                                        @endforeach
-                                                                        
-                                                                    </select>
-
-                                                         @if($errors->has('industry_name'))
-                                                        <span class="text text-danger">{{ $errors->first('industry_name') }}</span>
-                                                        @endif
-                                                                    </div>
-                                                                </div>
-
-                                                             
-
-                                                                
-                                                                                                                         
-                                                            </div>
-
-
-
-                                                            <div class="form-row">
-                                                                 <div class="col-md-6">
-                                                                    <div class="position-relative form-group">
-                                                                    <label for="exampleEmail11" class="">Industry Category <span class="previous_industry_category"></span></label>
-                                                                   <select name="industry_category" id="revised_category_2" class="form-control" required="">
+    <div class="card-body">
+        <div class="form-row">
+            <div class="col-md-12">
+                <div class="position-relative form-group">
+                    <label for="exampleEmail11" class="">Industry Name</label>
+                    <select name="industry_id" id="industry_id" class="form-control" required="">
+                        <option value="">Select Industry</option>
+                        @foreach($industry_list as $industry)
+                        <option value="{{ $industry->id }}">{{ $industry->industry_name }} </option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('industry_name'))
+                    <span class="text text-danger">{{ $errors->first('industry_name') }}</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-6">
+                <div class="position-relative form-group">
+                    <label for="exampleEmail11" class="">Industry Category <span class="previous_industry_category"></span></label>
+                    <select name="industry_category" id="revised_category_2" class="form-control" required="">
                     <option value="">Select Category</option>
                        @foreach($industry_category as $category)
                         <option  value="{{ $category->id }}">{{ $category->category_name }} </option>
