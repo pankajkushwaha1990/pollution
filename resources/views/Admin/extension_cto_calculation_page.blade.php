@@ -301,13 +301,13 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         </tr> 
                         @endif
 
-                        @if(isset($footer['deposited_water_amount']))
+                        @if(isset($footer['penalty_water_amount']))
                         <tr style="background-color: #c2c2c200;">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">CTO Water Penalty (-)</b></td>
+                            <td class="text-secondary-d2"  ><b style="font-size: 18px;">Fee already deposited CTO water penalty (-)</b></td>
                             @if(isset($footer['ca_diffrence']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
@@ -322,8 +322,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
                            
-                            @if(isset($footer['deposited_water_amount']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['deposited_water_amount']) }}</b></td>
+                            @if(isset($footer['penalty_water_amount']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['penalty_water_amount']) }}</b></td>
                             @endif
                         </tr> 
                         @endif
@@ -356,13 +356,13 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             @endif
                         </tr> 
                         @endif
-                        @if(isset($footer['deposited_air_amount']))
+                        @if(isset($footer['penalty_air_amount']))
                         <tr style="background-color: #c2c2c200;">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">CTO Air Penalty (-)</b></td>
+                            <td class="text-secondary-d2"  ><b style="font-size: 18px;">Fee already deposited CTO air penalty (-)</b></td>
                             @if(isset($footer['ca_diffrence']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
@@ -377,8 +377,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
                            
-                            @if(isset($footer['deposited_air_amount']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['deposited_air_amount']) }}</b></td>
+                            @if(isset($footer['penalty_air_amount']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['penalty_air_amount']) }}</b></td>
                             @endif
                         </tr> 
                         @endif
