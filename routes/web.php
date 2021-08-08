@@ -68,6 +68,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 	Route::get('/generated-cto-list',[AdminController::class,  'generated_cto_list'])->name('generated_cto_list');
 	 Route::get('/renew-cto-pdf/{id}/{pdf?}',[AdminController::class,  'renew_cto_pdf'])->name('renew_cto_pdf');
 
+	     Route::get('/regulation-add',[AdminController::class,  'regulation_add'])->name('regulation_add');
+    Route::get('/regulation-fee-calculate',[AdminController::class,  'regulation_fee_calculate'])->name('regulation_fee_calculate');
+
 
     
 
@@ -123,6 +126,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 	Route::get('/partner-edit/{id}',[PartnerController::class,  'partner_edit'])->name('partner_edit');
 	Route::post('/partnet-edit-submit',[PartnerController::class,  'partner_edit_submit'])->name('partner_edit_submit');
 	Route::get('/partner-delete/{id}',[PartnerController::class,  'partner_delete'])->name('partner_delete');
+
+
 
 
 

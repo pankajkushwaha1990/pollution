@@ -90,6 +90,12 @@
                                                 </i>Generated CTO List
                                             </a>
                                         </li>
+                                        <li>
+                                            <a href="{{ route('regulation_add') }}">
+                                                <i class="metismenu-icon pe-7s-graph">
+                                                </i>Regulation
+                                            </a>
+                                        </li>
 
                                        <!--  <li>
                                             <a href="{{ route('company_financial') }}">
