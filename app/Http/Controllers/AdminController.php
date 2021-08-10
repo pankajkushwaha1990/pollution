@@ -24,160 +24,495 @@ class AdminController extends Controller{
    	 return view('Admin.login');
   }
 
-   public function regulation_fee_with_value_boxes($request){
-          $category                = Category::find($request->industry_category_id);
-          $from_date               = $this->date_y_m_d($request->oprational_date);
-          $last_date                = $request->duration+$this->date_y($request->apply_date_view)."-".$category->tenure_to;
-          $current_ca              = $request->current_ca;
-          $format              = $request->format;
 
-          
-          $water_penalty = 0;
-          $duration_fix            = 1;
-          $ca_diff                 = 0;
-          $ca_diff_active          = 1;
-          $total_noc_fee           = 0;
-          $total_water_regu        = 0;
-          $total_cto_water_fee     = 0;
-          $total_water_penalty     = 0;
-          $total_air_regu          = 0;
-          $total_cto_air_fee       = 0;
-          $total_air_penalty      = 0;
-          $payable_amount         = 0;
-          if(empty($category)){
-            $response = ['status'=>'failure','message'=>'category not found'];
-          }else{
-             $to_date                   = $this->date_y($request->oprational_date)."-".$category->tenure_to;
-             if(strtotime($to_date)<strtotime($from_date)){
-               $to_date                 = 1+$this->date_y($request->oprational_date)."-".$category->tenure_to;
-             }
-             for ($i=0; $i < $duration_fix; $i++) { 
-                $days = $this->number_of_days($from_date,$to_date);
-                $ca_certificate_amt = isset($current_ca[$this->ca_y($from_date)])?$current_ca[$this->ca_y($from_date)]:end($current_ca);
-                $table_rowss[]     = [
-                  'sr_no'=>$i+1,'from_date'=>$this->date_d_m_y($from_date),'to_date'=>$this->date_d_m_y($to_date),'days'=>$days,
-                  'ca_certificate_amt'=>$this->change_currency($ca_certificate_amt,$format),'ca_diff'=>0,
-                  'cte_fees'=>0,'ca_amount'=>0
-                ];
-                if(strtotime($to_date)<strtotime($last_date)){
-                  $duration_fix++;
-                  
-                  // session()->put('old_ca',$this->ca_certificate_amt($current_ca));
-                }
+ 
+  private function regulation_ca_exist_air_old_calculation($request){
+   $applied_date          = $this->date_y_m_d($request->oprational_date);
+   $current_applied_date  = $this->date_y_m_d($request->apply_date_view);
+   $end_date              = $this->date_d_m_y($current_applied_date);
+   $tenure_to             = $this->tenure_by_category_id($request->industry_category_id);
+   $end_date              = $this->date_y($end_date)."-".$tenure_to;
+   $to_date               = $this->tenure_to_date($applied_date,$tenure_to);
+   //$request->previous_ca = $this->change_currency($request->previous_ca,$request->format);
+   //$fees          = $this->find_fee_category_applied_ca($request->industry_category_id_old,$applied_date,$request->previous_ca);
+   //$penalty_days          = $this->number_of_days($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$penalty_slab          = $this->penalty_slab_view($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$penalty_slab_percentage  = $this->penalty_slab_percentage($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$total_air_penalty        = $this->penalty_percentage_ca($penalty_slab_percentage,$fees);
 
-                $tenures                 =   Tenure::where('to','>=',$from_date)->where('to','<=',$to_date)->orderBy('from','asc')->first();
-                if($tenures){
-                  if(strtotime($tenures->to)<strtotime($to_date)){
-                   $from_date = date('Y-m-d',strtotime($from_date.' + 0 days'));
-                   $to_date   = date('Y',strtotime($from_date))."-".date('m-d',strtotime($tenures->to));
-                   if(strtotime($to_date)<strtotime($from_date)){
-                     $to_date                 = 1+date('Y',strtotime($from_date))."-".date('m-d',strtotime($tenures->to));
-                   }
-                   unset($table_rowss[$i]);
-                  }else{
-                   $from_date = date('Y-m-d',strtotime($to_date.' + 1 days'));
-                   $to_date1   = date('Y',strtotime($to_date))."-".$category->tenure_to;
-                   if(strtotime($from_date)<strtotime($to_date1)){
-                    $to_date   = date('Y',strtotime($to_date1))."-".$category->tenure_to;
-                   }else{
-                   $to_date   = 1+date('Y',strtotime($to_date1))."-".$category->tenure_to;
-
-                   }
-                   // if($this->number_of_days($from_date,$to_date1)>400){
-                   //  $to_date   = date('Y',strtotime($to_date))."-".$category->tenure_to;
-
-                   // }
-
-                  
-                   
-
-
-
-                  }
-                }else{
-                  $from_date = date('Y-m-d',strtotime($to_date.' + 1 days'));
-                  $to_date   = 1+date('Y',strtotime($to_date))."-".date('m-d',strtotime($to_date));
-                }                
-             }
-             $sr = 1;
-             $refresh_key = array_merge($table_rowss);
-
-             foreach ($refresh_key as $key => $value) {
-               $ca_diff = ($key==0)?0:($value['ca_certificate_amt']-$refresh_key[$key-1]['ca_certificate_amt']);
-               if($ca_diff<0){
-                $ca_diff = 0;
-               }
-               $tenure         = Tenure::where('to','>=',$this->date_y_m_d($value['from_date']))->orderBy('from','asc')->first();
-               $fee_ca_diff            = DB::table('fees')->where('tenure_id',$tenure->id)->where('start_amount','<',$ca_diff)
-                                 ->orderBy('start_amount','desc')->first();
-               $column_name    = $category->fee_column; 
-               if(empty($fee_ca_diff)){
-                $noc_fees       = $water_regu =  0; 
-               }else{
-                $noc_fees       = $water_regu =  $fee_ca_diff->$column_name; 
-               }
-               $fee_ca            = DB::table('fees')->where('tenure_id',$tenure->id)->where('start_amount','<',$value['ca_certificate_amt'])
-                                         ->orderBy('start_amount','desc')->first();
-              if(empty($fee_ca)){
-                 $cto_water_fee =  0; 
-               }else{
-                 $cto_water_fee =  round(($fee_ca->$column_name/365)*$value['days'],2); 
-               }
-
-               if($this->date_y($value['to_date'])== $this->date_y($request->apply_date_view)){
-                 $penalty_year                  = 1+$this->date_y($request->apply_date_view) - $this->date_y($request->oprational_date);
-                 $penalty_month                 = $penalty_year*12;
-                 if($penalty_month>12){
-                  $penalty = DB::table('penalty')->where('end_amount',12)->first();
-                  $water_penalty    = ($penalty->percentage*$penalty_year*$cto_water_fee)/100;
-                 }
-                 
-
-                // $water_penalty = 10;
-               }else{
-                 $water_penalty = 0;
-               } 
-
-               $total_noc_fee+=  $noc_fees;
-               $total_water_regu+=  $water_regu;
-               $total_cto_water_fee +=   $cto_water_fee;  
-               $total_water_penalty +=  $water_penalty;
-               $total_air_regu       +=  $water_regu;
-               $total_cto_air_fee    +=  $cto_water_fee;
-               $total_air_penalty   +=  $water_penalty;
-
-
-
-
-               $table_rows[]     = [
-                  'sr_no'=>$sr++,'from_date'=>$value['from_date'],'to_date'=>$value['to_date'],'days'=>$value['days'],
-                  'ca_certificate_amt'=>$value['ca_certificate_amt'],'ca_diff'=>$ca_diff,
-                  'cte_fees'=>0,'ca_amount'=>0,'noc_fees'=>$noc_fees,'water_regu'=>$water_regu,'cto_water_fee'=>$cto_water_fee,
-                  'water_penalty'=>$water_penalty,'air_regu'=>$water_regu,'cto_air_fee'=>$cto_water_fee,
-                  'air_penalty'=>$water_penalty
-                ];
-             }
-
-             $payable_amount+=$total_noc_fee+$total_water_regu+$total_cto_water_fee+$total_water_penalty+$total_air_regu+$total_cto_air_fee+$total_air_penalty;
-             // dd();
-
-             
-
-             $header = [
-                        'industry_id'=>$request->industry_id,'industry_category_id'=>$request->industry_category_id,'industry_name'=>$this->industry_name_by_id($request->industry_id),'tenure_from'=>$this->date_d_monthname("2021-".$category->tenure_from),
-                        'tenure_to'=>$this->date_d_monthname("2021-".$category->tenure_to),
-                        'industry_type'=>$category->category_name,'fee_type'=>'regulation','valid_upto'=>$last_date,'deposited_fee'=>0,
-                        'deposited_date'=>0,'duration'=>$request->duration,'industry_category'=>ucfirst(strtok($category->fee_column, '_')),'applied_date'=>$request->apply_date_view,'total_cte_fee'=>0,'ca_amount'=>0,'final_fee'=>0
-                      ];
-            $table_head = ['#','From Date','To Date','Days','CA Certificate AMT','CA Difference','CTE FEE(Regu) / NOC FEE','CTO-Water FEE(Regu)','CTO-Water FEE','CTO-Water Penalty','CTO-Air FEE(Regu)','CTO-Air FEE','CTO-Air Penalty'];
-            $footer    = ['noc_fees_total'=>$total_noc_fee,'total_water_regu'=>$total_water_regu,'total_cto_water_fee'=>$total_cto_water_fee,'total_water_penalty'=>$total_water_penalty,'total_air_regu'=>$total_air_regu,'total_cto_air_fee'=>$total_cto_air_fee,
-            'total_air_penalty'=>$total_air_penalty,'payable_amount'=>$payable_amount,'deposited_date'=>0,'deposited_amount'=>0,'total_cte_fee'=>0,'final_fee'=>0];
-            $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
-         }
-
-
-          return $response = ['status'=>'success','message'=>'category fetched successfully','box_slot'=>[],'box_slot_filled'=>$request->current_ca,'calculation'=> $response];
+   $category      = Category::find($request->industry_category_id);
+   $penalty_ca_old    = 0;
+   $run               = 1;
+   for ($i=0; $i < $run; $i++) {
+    if(strtotime($to_date)<=strtotime($end_date)){
+      $from_date         =   $applied_date;
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      if($ca_diff<=0){ $ca_diff = 0; }
+      $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
+      if(strtotime($current_applied_date)<strtotime($to_date)){
+             $to_date            = $current_applied_date;
+      }else{
+        $run++;
+      }
+      $days              =   $this->number_of_days($from_date,$to_date);
+      $fees             = $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
+      $table_rows[]      =   [
+                                    'sr_no'=>$i+1,
+                                    'from_date'=>$this->date_d_m_y($from_date),
+                                    'to_date'=>$this->date_d_m_y($to_date),
+                                    'days'=>$days,
+                                    'ca_certificate_amount'=>$penalty_ca,
+                                    'ca_diffrence'=>$ca_diff,
+                                    'noc_fee'=>$noc_fee,
+                                    'air_regu_fee'=>$noc_fee,
+                                    'cto_air_fee'=>$this->fee_by_days($fees,$days),
+                             ];
+      $penalty_ca_old     = $penalty_ca;
+      $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
+      $to_date            = $this->tenure_end_date($applied_date,$tenure_to);       
+    }      
    }
+   return $table_rows;
+  }
+
+  private function regulation_ca_exist_water_old_calculation($request){
+   $applied_date          = $this->date_y_m_d($request->oprational_date);
+   $current_applied_date  = $this->date_y_m_d($request->apply_date_view);
+   $end_date              = $this->date_d_m_y($current_applied_date);
+   $tenure_to             = $this->tenure_by_category_id($request->industry_category_id);
+   $end_date              = $this->date_y($end_date)."-".$tenure_to;
+   $to_date               = $this->tenure_to_date($applied_date,$tenure_to);
+   //$request->previous_ca = $this->change_currency($request->previous_ca,$request->format);
+   //$fees          = $this->find_fee_category_applied_ca($request->industry_category_id_old,$applied_date,$request->previous_ca);
+   //$penalty_days          = $this->number_of_days($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$penalty_slab          = $this->penalty_slab_view($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$penalty_slab_percentage  = $this->penalty_slab_percentage($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$total_air_penalty        = $this->penalty_percentage_ca($penalty_slab_percentage,$fees);
+
+   $category      = Category::find($request->industry_category_id);
+   $penalty_ca_old    = 0;
+   $run               = 1;
+   for ($i=0; $i < $run; $i++) {
+    if(strtotime($to_date)<=strtotime($end_date)){
+      $from_date         =   $applied_date;
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      if($ca_diff<=0){ $ca_diff = 0; }
+      $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
+      if(strtotime($current_applied_date)<strtotime($to_date)){
+             $to_date            = $current_applied_date;
+      }else{
+        $run++;
+      }
+      $days              =   $this->number_of_days($from_date,$to_date);
+      $fees             = $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
+      $table_rows[]      =   [
+                                    'sr_no'=>$i+1,
+                                    'from_date'=>$this->date_d_m_y($from_date),
+                                    'to_date'=>$this->date_d_m_y($to_date),
+                                    'days'=>$days,
+                                    'ca_certificate_amount'=>$penalty_ca,
+                                    'ca_diffrence'=>$ca_diff,
+                                    'noc_fee'=>$noc_fee,
+                                    'water_regu_fee'=>$noc_fee,
+                                    'cto_water_fee'=>$this->fee_by_days($fees,$days),
+                             ];
+      $penalty_ca_old     = $penalty_ca;
+      $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
+      $to_date            = $this->tenure_end_date($applied_date,$tenure_to);       
+    }      
+   }
+   return $table_rows;
+  }
+
+public function regulation_fee_with_air($request){
+    $total_cto_water_fee = 0;
+   $total_cto_air_fee = 0;
+   $total_noc_fee     = 0;
+   $penalty_ca_old    = 0;
+   $air_regu_fee      = 0;
+   
+        $penalty_old_data = $this->regulation_ca_exist_air_old_calculation($request);
+        if(!empty($penalty_old_data)){
+         foreach ($penalty_old_data as $key => $old_data) {
+            $table_rows[]      =   [
+                                        'sr_no'=>$old_data['sr_no'],
+                                        'from_date'=>$old_data['from_date'],
+                                        'to_date'=>$old_data['to_date'],
+                                        'days'=>$old_data['days'],
+                                        'ca_certificate_amount'=>$old_data['ca_certificate_amount'],
+                                        'ca_diffrence'=>$old_data['ca_diffrence'],
+                                        'noc_fee'=>$old_data['noc_fee'],
+                                        'air_regu_fee'=>$old_data['air_regu_fee'],
+                                        'cto_air_fee'=>$old_data['cto_air_fee'],
+                                 ];
+            $total_cto_air_fee   += $old_data['cto_air_fee'];
+            $total_noc_fee       += $old_data['noc_fee'];
+            $air_regu_fee        += $old_data['air_regu_fee'];       
+         }
+        }
+
+        $applied_date          = $this->add_1_day_y_m_d($request->apply_date_view);
+        $current_applied_date  = $this->date_y_m_d($request->apply_date_view);
+        $end_date              = $this->date_d_m_y($this->add_year($current_applied_date,$request->duration));
+        $tenure_to             = $this->tenure_by_category_id($request->industry_category_id);
+        $end_date              = $this->date_y($end_date)."-".$tenure_to;
+        $to_date               = $this->tenure_to_date($applied_date,$tenure_to);
+        $last_ca               = $this->change_currency($request->penalty_ca[2021],$request->format);
+       $fees        = $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$last_ca);
+        $penalty_days          = $this->number_of_days($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+       $penalty_slab          = $this->penalty_slab_view($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+        echo $penalty_slab_percentage  = $this->penalty_slab_percentage($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+        $total_air_penalty        = $this->penalty_percentage_ca($penalty_slab_percentage,$fees);
+        //$total_air_penalty        = 0;
+        // $penalty_days = 0;
+         // $penalty_slab = 0;
+        $category      = Category::find($request->industry_category_id);
+        $run               = 1;
+   
+   for ($i=0; $i < $run; $i++) {
+    if(strtotime($to_date)<=strtotime($end_date)){
+      $from_date         =   $applied_date;
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $days              =   $this->number_of_days($from_date,$to_date);
+      $fees              =   $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      if($ca_diff<=0){ $ca_diff = 0; }
+      $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
+      $table_rows[]      =   [
+                                    'sr_no'=>count($penalty_old_data)+$i+1,
+                                    'from_date'=>$this->date_d_m_y($from_date),
+                                    'to_date'=>$this->date_d_m_y($to_date),
+                                    'days'=>$days,
+                                    'ca_certificate_amount'=>$penalty_ca,
+                                    'ca_diffrence'=>$ca_diff,
+                                    'noc_fee'=>$noc_fee,
+                                    'air_regu_fee'=>$noc_fee,
+                                    'cto_air_fee'=>$this->fee_by_days($fees,$days),
+                             ];
+      $penalty_ca_old     = $penalty_ca;
+      $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
+      $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
+      $total_cto_air_fee   += $this->fee_by_days($fees,$days);
+      $total_noc_fee       += $noc_fee;
+      $air_regu_fee       += $noc_fee;
+      $run++; 
+    }      
+   }
+   $final_cto_air_fee   = $total_cto_air_fee-$request->deposited_air_amount;
+   $payable_amount      = $final_cto_air_fee+$total_air_penalty+$total_noc_fee+$air_regu_fee-$request->penalty_air_amount;
+
+   
+   $header = [
+              'industry_id'=>$request->industry_id,'industry_category_id'=>$request->industry_category_id_new,
+              'industry_name'=>$this->industry_name_by_id($request->industry_id),
+              'industry_type'=>$category->category_name,'tenure_from'=>$this->date_d_monthname("2021-".$category->tenure_from),
+              'tenure_to'=>$this->date_d_monthname("2021-".$category->tenure_to),'fee_type'=>'renew','valid_upto'=>$end_date,
+              'deposited_air_fee'=>$request->deposited_air_amount,'previous_category_name'=>$request->industry_category_old,
+              'previous_category_id'=>$request->industry_category_id_new,'new_category_id'=>$request->industry_category_id_new,
+              'previous_ca'=>$request->previous_ca,'new_ca'=>$request->new_ca,'previous_apply_date'=>$request->oprational_date,
+              'current_apply_date'=>$request->oprational_date,'view_apply_on'=>$request->apply_date_view,'concent_type'=>$request->concent_type,
+              'duration'=>$request->duration,'industry_category'=>ucfirst(strtok($category->fee_column, '_')),
+              'applied_date'=>$this->date_y_m_d($request->oprational_date),'total_cte_fee'=>0,'ca_amount'=>$request->new_ca,'final_fee'=>0,
+              'penalty_days'=>$penalty_days,'penalty_slab'=>$penalty_slab,'total_air_penalty'=>$total_air_penalty
+            ];
+        
+        $footer    = [
+            'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
+            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','air_regu_fee'=>$air_regu_fee,
+            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'penalty_days'=>'exist','total_air_penalty'=>$total_air_penalty,'penalty_air_amount'=>$request->penalty_air_amount
+        ];
+        $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Air FEE(Regu)','CTO Air Fee'];
+        $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
+        return $response;
+}
+
+public function regulation_fee_with_water($request){
+    $total_cto_water_fee = 0;
+   $total_cto_air_fee = 0;
+   $total_noc_fee     = 0;
+   $penalty_ca_old    = 0;
+   $air_regu_fee      = 0;
+   $water_regu_fee     = 0;
+   
+        $penalty_old_data = $this->regulation_ca_exist_water_old_calculation($request);
+        if(!empty($penalty_old_data)){
+         foreach ($penalty_old_data as $key => $old_data) {
+            $table_rows[]      =   [
+                                        'sr_no'=>$old_data['sr_no'],
+                                        'from_date'=>$old_data['from_date'],
+                                        'to_date'=>$old_data['to_date'],
+                                        'days'=>$old_data['days'],
+                                        'ca_certificate_amount'=>$old_data['ca_certificate_amount'],
+                                        'ca_diffrence'=>$old_data['ca_diffrence'],
+                                        'noc_fee'=>$old_data['noc_fee'],
+                                        'water_regu_fee'=>$old_data['water_regu_fee'],
+                                        'cto_water_fee'=>$old_data['cto_water_fee'],
+                                 ];
+            $total_cto_water_fee   += $old_data['cto_water_fee'];
+            $total_noc_fee       += $old_data['noc_fee'];
+            $water_regu_fee        += $old_data['water_regu_fee'];       
+         }
+        }
+
+        $applied_date          = $this->add_1_day_y_m_d($request->apply_date_view);
+        $current_applied_date  = $this->date_y_m_d($request->apply_date_view);
+        $end_date              = $this->date_d_m_y($this->add_year($current_applied_date,$request->duration));
+        $tenure_to             = $this->tenure_by_category_id($request->industry_category_id);
+        $end_date              = $this->date_y($end_date)."-".$tenure_to;
+        $to_date               = $this->tenure_to_date($applied_date,$tenure_to);
+        $last_ca               = $this->change_currency($request->penalty_ca[2021],$request->format);
+       $fees        = $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$last_ca);
+        $penalty_days          = $this->number_of_days($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+       $penalty_slab          = $this->penalty_slab_view($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+        $penalty_slab_percentage  = $this->penalty_slab_percentage($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+        $total_water_penalty        = $this->penalty_percentage_ca($penalty_slab_percentage,$fees);
+        //$total_air_penalty        = 0;
+        // $penalty_days = 0;
+         // $penalty_slab = 0;
+        $category      = Category::find($request->industry_category_id);
+        $run               = 1;
+   
+   for ($i=0; $i < $run; $i++) {
+    if(strtotime($to_date)<=strtotime($end_date)){
+      $from_date         =   $applied_date;
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $days              =   $this->number_of_days($from_date,$to_date);
+      $fees              =   $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      if($ca_diff<=0){ $ca_diff = 0; }
+      $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
+      $table_rows[]      =   [
+                                    'sr_no'=>count($penalty_old_data)+$i+1,
+                                    'from_date'=>$this->date_d_m_y($from_date),
+                                    'to_date'=>$this->date_d_m_y($to_date),
+                                    'days'=>$days,
+                                    'ca_certificate_amount'=>$penalty_ca,
+                                    'ca_diffrence'=>$ca_diff,
+                                    'noc_fee'=>$noc_fee,
+                                    'water_regu_fee'=>$noc_fee,
+                                    'cto_water_fee'=>$this->fee_by_days($fees,$days),
+                             ];
+      $penalty_ca_old     = $penalty_ca;
+      $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
+      $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
+      $total_cto_water_fee   += $this->fee_by_days($fees,$days);
+      $total_noc_fee       += $noc_fee;
+      $water_regu_fee       += $noc_fee;
+      $run++; 
+    }      
+   }
+   $final_cto_water_fee   = $total_cto_water_fee-$request->deposited_water_amount;
+   $payable_amount      = $final_cto_water_fee+$total_water_penalty+$total_noc_fee+$water_regu_fee-$request->penalty_water_amount;
+
+   
+   $header = [
+              'industry_id'=>$request->industry_id,'industry_category_id'=>$request->industry_category_id_new,
+              'industry_name'=>$this->industry_name_by_id($request->industry_id),
+              'industry_type'=>$category->category_name,'tenure_from'=>$this->date_d_monthname("2021-".$category->tenure_from),
+              'tenure_to'=>$this->date_d_monthname("2021-".$category->tenure_to),'fee_type'=>'renew','valid_upto'=>$end_date,
+              'deposited_water_fee'=>$request->deposited_air_amount,'previous_category_name'=>$request->industry_category_old,
+              'previous_category_id'=>$request->industry_category_id_new,'new_category_id'=>$request->industry_category_id_new,
+              'previous_ca'=>$request->previous_ca,'new_ca'=>$request->new_ca,'previous_apply_date'=>$request->oprational_date,
+              'current_apply_date'=>$request->oprational_date,'view_apply_on'=>$request->apply_date_view,'concent_type'=>$request->concent_type,
+              'duration'=>$request->duration,'industry_category'=>ucfirst(strtok($category->fee_column, '_')),
+              'applied_date'=>$this->date_y_m_d($request->oprational_date),'total_cte_fee'=>0,'ca_amount'=>$request->new_ca,'final_fee'=>0,
+              'penalty_days'=>$penalty_days,'penalty_slab'=>$penalty_slab,'total_water_penalty'=>$total_water_penalty
+            ];
+        
+        $footer    = [
+            'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
+            'total_cto_water_fee'=>$total_cto_water_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','water_regu_fee'=>$air_regu_fee,
+            'final_cto_water_fee'=>$final_cto_water_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty,'penalty_water_amount'=>$request->penalty_water_amount
+        ];
+        $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Water FEE(Regu)','CTO Water Fee'];
+        $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
+        return $response;
+}
+
+  private function regulation_ca_exist_both_old_calculation($request){
+   $applied_date          = $this->date_y_m_d($request->oprational_date);
+   $current_applied_date  = $this->date_y_m_d($request->apply_date_view);
+   $end_date              = $this->date_d_m_y($current_applied_date);
+   $tenure_to             = $this->tenure_by_category_id($request->industry_category_id);
+   $end_date              = $this->date_y($end_date)."-".$tenure_to;
+   $to_date               = $this->tenure_to_date($applied_date,$tenure_to);
+   //$request->previous_ca = $this->change_currency($request->previous_ca,$request->format);
+   //$fees          = $this->find_fee_category_applied_ca($request->industry_category_id_old,$applied_date,$request->previous_ca);
+   //$penalty_days          = $this->number_of_days($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$penalty_slab          = $this->penalty_slab_view($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$penalty_slab_percentage  = $this->penalty_slab_percentage($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+   //$total_air_penalty        = $this->penalty_percentage_ca($penalty_slab_percentage,$fees);
+
+   $category      = Category::find($request->industry_category_id);
+   $penalty_ca_old    = 0;
+   $run               = 1;
+   for ($i=0; $i < $run; $i++) {
+    if(strtotime($to_date)<=strtotime($end_date)){
+      $from_date         =   $applied_date;
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      if($ca_diff<=0){ $ca_diff = 0; }
+      $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
+      if(strtotime($current_applied_date)<strtotime($to_date)){
+             $to_date            = $current_applied_date;
+      }else{
+        $run++;
+      }
+      $days              =   $this->number_of_days($from_date,$to_date);
+      $fees             = $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
+      $table_rows[]      =   [
+                                    'sr_no'=>$i+1,
+                                    'from_date'=>$this->date_d_m_y($from_date),
+                                    'to_date'=>$this->date_d_m_y($to_date),
+                                    'days'=>$days,
+                                    'ca_certificate_amount'=>$penalty_ca,
+                                    'ca_diffrence'=>$ca_diff,
+                                    'noc_fee'=>$noc_fee,
+                                    'water_regu_fee'=>$noc_fee,
+                                    'air_regu_fee'=>$noc_fee,
+                                    'cto_water_fee'=>$this->fee_by_days($fees,$days),
+                                    'cto_air_fee'=>$this->fee_by_days($fees,$days),
+                             ];
+      $penalty_ca_old     = $penalty_ca;
+      $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
+      $to_date            = $this->tenure_end_date($applied_date,$tenure_to);       
+    }      
+   }
+   return $table_rows;
+  }
+
+public function regulation_fee_with_both($request){
+    $total_cto_water_fee = 0;
+   $total_cto_air_fee = 0;
+   $total_noc_fee     = 0;
+   $penalty_ca_old    = 0;
+   $air_regu_fee      = 0;
+   $water_regu_fee     = 0;
+   
+        $penalty_old_data = $this->regulation_ca_exist_both_old_calculation($request);
+        if(!empty($penalty_old_data)){
+         foreach ($penalty_old_data as $key => $old_data) {
+            $table_rows[]      =   [
+                                        'sr_no'=>$old_data['sr_no'],
+                                        'from_date'=>$old_data['from_date'],
+                                        'to_date'=>$old_data['to_date'],
+                                        'days'=>$old_data['days'],
+                                        'ca_certificate_amount'=>$old_data['ca_certificate_amount'],
+                                        'ca_diffrence'=>$old_data['ca_diffrence'],
+                                        'noc_fee'=>$old_data['noc_fee'],
+                                        'water_regu_fee'=>$old_data['water_regu_fee'],
+                                        'air_regu_fee'=>$old_data['air_regu_fee'],
+                                        'cto_water_fee'=>$old_data['cto_water_fee'],
+                                        'cto_air_fee'=>$old_data['cto_air_fee'],
+                                 ];
+            $total_cto_water_fee   += $old_data['cto_water_fee'];
+            $total_cto_air_fee   += $old_data['cto_air_fee'];
+            $total_noc_fee       += $old_data['noc_fee'];
+            $water_regu_fee        += $old_data['water_regu_fee'];       
+            $air_regu_fee        += $old_data['air_regu_fee'];       
+         }
+        }
+
+        $applied_date          = $this->add_1_day_y_m_d($request->apply_date_view);
+        $current_applied_date  = $this->date_y_m_d($request->apply_date_view);
+        $end_date              = $this->date_d_m_y($this->add_year($current_applied_date,$request->duration));
+        $tenure_to             = $this->tenure_by_category_id($request->industry_category_id);
+        $end_date              = $this->date_y($end_date)."-".$tenure_to;
+        $to_date               = $this->tenure_to_date($applied_date,$tenure_to);
+        $last_ca               = $this->change_currency($request->penalty_ca[2021],$request->format);
+       $fees        = $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$last_ca);
+        $penalty_days          = $this->number_of_days($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+       $penalty_slab          = $this->penalty_slab_view($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+        $penalty_slab_percentage  = $this->penalty_slab_percentage($this->date_y_m_d($request->oprational_date),$this->date_y_m_d($request->apply_date_view));
+        $total_water_penalty        = $this->penalty_percentage_ca($penalty_slab_percentage,$fees);
+        $total_air_penalty        = $this->penalty_percentage_ca($penalty_slab_percentage,$fees);
+        //$total_air_penalty        = 0;
+        // $penalty_days = 0;
+         // $penalty_slab = 0;
+        $category      = Category::find($request->industry_category_id);
+        $run               = 1;
+   
+   for ($i=0; $i < $run; $i++) {
+    if(strtotime($to_date)<=strtotime($end_date)){
+      $from_date         =   $applied_date;
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $days              =   $this->number_of_days($from_date,$to_date);
+      $fees              =   $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
+      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      if($ca_diff<=0){ $ca_diff = 0; }
+      $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
+      $table_rows[]      =   [
+                                    'sr_no'=>count($penalty_old_data)+$i+1,
+                                    'from_date'=>$this->date_d_m_y($from_date),
+                                    'to_date'=>$this->date_d_m_y($to_date),
+                                    'days'=>$days,
+                                    'ca_certificate_amount'=>$penalty_ca,
+                                    'ca_diffrence'=>$ca_diff,
+                                    'noc_fee'=>$noc_fee,
+                                    'water_regu_fee'=>$noc_fee,
+                                    'air_regu_fee'=>$noc_fee,
+                                    'cto_water_fee'=>$this->fee_by_days($fees,$days),
+                                    'cto_air_fee'=>$this->fee_by_days($fees,$days),
+                             ];
+      $penalty_ca_old     = $penalty_ca;
+      $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
+      $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
+      $total_cto_water_fee   += $this->fee_by_days($fees,$days);
+      $total_cto_air_fee   += $this->fee_by_days($fees,$days);
+      $total_noc_fee       += $noc_fee;
+      $water_regu_fee       += $noc_fee;
+      $air_regu_fee       += $noc_fee;
+      $run++; 
+    }      
+   }
+   $final_cto_water_fee   = $total_cto_water_fee-$request->deposited_water_amount;
+   $final_cto_air_fee   = $total_cto_air_fee-$request->deposited_air_amount;
+   $payable_amount      = $final_cto_water_fee+$total_water_penalty+$final_cto_air_fee+$total_air_penalty+$total_noc_fee+$water_regu_fee-$request->penalty_water_amount+$air_regu_fee+$request->penalty_air_amount;
+
+   
+   $header = [
+              'industry_id'=>$request->industry_id,'industry_category_id'=>$request->industry_category_id_new,
+              'industry_name'=>$this->industry_name_by_id($request->industry_id),
+              'industry_type'=>$category->category_name,'tenure_from'=>$this->date_d_monthname("2021-".$category->tenure_from),
+              'tenure_to'=>$this->date_d_monthname("2021-".$category->tenure_to),'fee_type'=>'renew','valid_upto'=>$end_date,
+              'deposited_water_fee'=>$request->deposited_water_amount,'deposited_air_fee'=>$request->deposited_air_amount,'previous_category_name'=>$request->industry_category_old,
+              'previous_category_id'=>$request->industry_category_id_new,'new_category_id'=>$request->industry_category_id_new,
+              'previous_ca'=>$request->previous_ca,'new_ca'=>$request->new_ca,'previous_apply_date'=>$request->oprational_date,
+              'current_apply_date'=>$request->oprational_date,'view_apply_on'=>$request->apply_date_view,'concent_type'=>$request->concent_type,
+              'duration'=>$request->duration,'industry_category'=>ucfirst(strtok($category->fee_column, '_')),
+              'applied_date'=>$this->date_y_m_d($request->oprational_date),'total_cte_fee'=>0,'ca_amount'=>$request->new_ca,'final_fee'=>0,
+              'penalty_days'=>$penalty_days,'penalty_slab'=>$penalty_slab,'total_water_penalty'=>$total_water_penalty,'total_air_penalty'=>$total_air_penalty
+            ];
+        
+        $footer    = [
+            'deposited_water_amount'=>$request->deposited_water_amount,
+            'deposited_air_amount'=>$request->deposited_air_amount,
+            'final_fee'=>0,
+            'total_cto_water_fee'=>$total_cto_water_fee,
+            'total_cto_air_fee'=>$total_cto_air_fee,
+            'ca_diffrence'=>'exist','noc_fee'=>'exist',
+            'water_regu_fee'=>$water_regu_fee,
+            'air_regu_fee'=>$air_regu_fee,
+            'final_cto_water_fee'=>$final_cto_water_fee,
+            'final_cto_air_fee'=>$final_cto_air_fee,
+            'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'penalty_days'=>'exist',
+            'total_water_penalty'=>$total_water_penalty,
+            'total_air_penalty'=>$total_air_penalty,
+            'penalty_water_amount'=>$request->penalty_water_amount,
+            'penalty_air_amount'=>$request->penalty_air_amount
+        ];
+        $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Water FEE(Regu)','CTO Water Fee','CTO-Air FEE(Regu)','CTO Air Fee'];
+        $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
+        return $response;
+}
 
       private function ca_y($from_date=null){
           $year = (int) $this->date_y($this->date_d_m_y($from_date));
@@ -187,13 +522,13 @@ class AdminController extends Controller{
    public function regulation_fee_calculate(Request $request){
       $industry_id              = $request->industry_id;
       $industry_category_id     = $request->industry_category_id;
-      $oprational_date         = $request->oprational_date;
+      $oprational_date          = $request->oprational_date;
       $duration                 = $request->duration;
       $apply_date_view          = $request->apply_date_view;
       $action                   = $request->action;
-      $current_ca               = $request->current_ca;
-      
-
+      $penalty_ca               = $request->penalty_ca;
+      $format                   = $request->format;
+      $concent_type             = $request->concent_type;
       if(empty($industry_id)){
          $response = ['status'=>'failure','message'=>'Please select industry'];
       }elseif(empty($industry_category_id)){
@@ -204,12 +539,20 @@ class AdminController extends Controller{
          $response = ['status'=>'failure','message'=>'Please apply date'];
       }elseif(empty($action)){
          $response = ['status'=>'failure','message'=>'action not found'];
+      }elseif(empty($penalty_ca)){
+         $response = ['status'=>'failure','message'=>'please enter CA Certificate Amount'];
+      }elseif(empty($concent_type)){
+         $response = ['status'=>'failure','message'=>'please select concent type'];
       }else{
-         if(empty($current_ca)){
-            $response = $this->regulation_fee_boxes($request);
-         }elseif(!empty($current_ca)){
-             $response = $this->regulation_fee_with_value_boxes($request);
-             
+         if($concent_type=='air'){
+             echo "a";
+             $response = $this->regulation_fee_with_air($request);
+         }elseif($concent_type=='water'){
+             echo "b";
+             $response = $this->regulation_fee_with_water($request);
+         }elseif($concent_type=='both'){
+             echo "c";
+             $response = $this->regulation_fee_with_both($request);
          }
       }
 
@@ -1872,8 +2215,12 @@ class AdminController extends Controller{
     }
     $months        = abs((date('Y', $end) - date('Y', $start))*12 + (date('m', $end) - date('m', $start)))+$add_extra_month;
     $penalty_slab  = DB::table('penalty')->where('start_amount','<=',$months)->orderBy('start_amount','desc')->first();
-    if($penalty_slab){
+    if($penalty_slab && $months<=12){
       return (int) $penalty_slab->percentage;
+    }elseif($penalty_slab && $months>12){
+       $year               = round($months/12);
+       $next_year          = round($months/12)+1;
+       return $next_year*100;
     }else{
       return 0;
     }

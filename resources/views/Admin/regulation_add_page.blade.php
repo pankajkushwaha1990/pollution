@@ -233,7 +233,7 @@ hr {
             <div class="form-row">
             <div class="col-md-6">
                 <div class="position-relative form-group">
-                <label for="exampleEmail11" class="">CA<br> &nbsp; &nbsp;  &nbsp; 
+                <label for="exampleEmail11" class="">CA Currency Format<br> &nbsp; &nbsp;  &nbsp; 
             <div id="radioBtn" class="btn-group">
               <a class="btn btn-default btn-sm  currency_format" format='num'  data-toggle="fun" data-title="Y">Num</a>
               <a class="btn btn-default btn-sm active currency_format" format='lac' style="background-color: #18b3ef;" data-toggle="fun" data-title="X">Lac</a>
@@ -258,8 +258,37 @@ hr {
             </div>
             </div>                                                      
         </div>
+        <div class="form-row">
+            <div class="col-md-6">
+                <div class="position-relative form-group">
+                    <label for="exampleEmail11" class="">Deposited  Air Amount</label>
+                    <input name="deposited_air_amount" id="deposited_air_amount" placeholder="Enter Amount" type="text" class="form-control" required="">
+                                    </div>
+            </div>
+            <div class="col-md-6">
+                <div class="position-relative form-group">
+                <label for="exampleEmail11" class="">Deposited  Water Amount</label>
+                <input name="deposited_water_amount" id="deposited_water_amount" placeholder="Enter Amount" type="text" class="form-control" required="">
+                                </div>
+            </div>
+        </div>
 
-        <div class="form-row" id="regulation_box_here">
+        <div class="form-row">
+            <div class="col-md-6">
+                <div class="position-relative form-group">
+                    <label for="exampleEmail11" class=""><b>Penalty  Air Amount</b></label>
+                    <input name="penalty_air_amount" id="penalty_air_amount" value="0" placeholder="Enter Amount" type="text" class="form-control" required="">
+                                    </div>
+            </div>
+            <div class="col-md-6">
+                <div class="position-relative form-group">
+                <label for="exampleEmail11" class=""><b>Penalty  Water Amount</b></label>
+                <input name="penalty_water_amount" value="0" id="penalty_water_amount" placeholder="Enter Amount" type="text" class="form-control" required="">
+                                </div>
+            </div>
+        </div>
+<hr>
+        <div class="form-row" id="show_penalty_box">
             
         </div>
 
@@ -270,7 +299,7 @@ hr {
                                                           
 
         <div class="form-row">
-            <div class="col-md-10"></div>
+            <div class="col-md-8"></div>
 
         <!--     <div class="col-md-1">
                 <div class="position-relative form-group">
@@ -278,9 +307,15 @@ hr {
                 </div>
             </div>
  -->
-             <div class="col-md-1">
+  <div class="col-md-2">
                 <div class="position-relative form-group">
-                 <button type="submit" value="calculate" id="calculate_2" class="btn btn-success">Calculate</button>
+                 <button type="button" style="width: 100%;" value="add_ca_certificate" id="add_ca_certificate" class="btn btn-success">Add CA Certificate</button>
+                </div>
+            </div>
+
+             <div class="col-md-2">
+                <div class="position-relative form-group">
+                 <button type="submit" style="width: 100%;" value="calculate" id="calculate_2" class="btn btn-success">Calculate</button>
                 </div>
             </div>
         </div>
@@ -292,6 +327,35 @@ hr {
     </div>
 </div>
 </form>
+
+  <div class="main-card mb-3 card">
+                    <div class="card-body">
+                    <div class="mb-3"><h5 class="card-title">Report</h5></div>
+                        <div class="mb-3"><span class="symbol_error text text-danger"></span></div>                     
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-5"></div>
+                               <div class="col-md-4">  
+                                        <div class="loader" style="display: none;">
+                                        <div class="ball-rotate">
+                                            <div></div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </div>
+
+                          
+                            <div id="calculation_result_here">
+ 
+                            </div>
+                                                              
+                                                              
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+           
 </div>
 </div>
 </div>
@@ -332,12 +396,31 @@ hr {
 </script>
 
 <script type="text/javascript">
+    $('#add_ca_certificate').click(function(e){        
+        var oprational_date  = $('#oprational_date').val().split("/");
+        var box_from             = oprational_date[2];
+        var financial            = oprational_date[1]+''+oprational_date[0];
+        if(financial<=331){
+          var box_from             = oprational_date[2]-1;
+        }
+        var current_applied_date = $('#apply_date_view').val().split("/");
+        var box_to               = current_applied_date[2];
+        var box = '';
+        for (var i = box_from; i<= box_to; i++) {
+            box+='<div class="col-md-3"><div class="position-relative form-group"><label for="exampleEmail11" class="">CA Certificate '+i+'</label><input id="ca" name="penalty_ca['+i+']" placeholder="Enter CA '+i+'" type="text" class="form-control" required=""></div></div>';
+        }
+        $('#show_penalty_box').html(box).show();
+    })
+</script>
+
+
+<script type="text/javascript">
   $('#myForm').on('submit', function(e) {
-      e.preventDefault(); // prevent native submit
-      var format = $('.currency_format.active').attr('format');
+    e.preventDefault(); // prevent native submit
+    var format = $('.currency_format.active').attr('format');
       $(this).ajaxSubmit({
           success: function(response) {
-            $('#regulation_box_here').html(response);
+            $('#calculation_result_here').html(response);
          },
          data: { action: 'calculate','format':format}
 
