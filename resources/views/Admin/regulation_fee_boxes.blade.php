@@ -187,15 +187,10 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         </tr> 
                         @endforeach
                         <tr style="background-color: #c2c2c200;">
-                            <td ></td>
-                            <td ></td>
-                            <td ></td>
-                            <td class="text-95" ></td>
+                            
                            
-                            <td class="text-secondary-d2"  style="text-align: center;"><b style="font-size: 18px;">Fee Total</b></td>
-                             @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                            <td colspan="6" class="text-secondary-d2"  style="text-align: right;"><b style="font-size: 18px;">Fee Total</b></td>
+                            
                             
                              @if(isset($footer['noc_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_noc_fee']) }}</b></td>
@@ -220,10 +215,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         <tr style="background-color: #c2c2c200;">
                             <!-- <td></td> -->
                             
-                            <td colspan="5" class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">Fee already deposited at the time of last grant of CTO (-)</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                            <td colspan="6" class="text-secondary-d2" style="text-align: right;"><b style="font-size: 18px;">Fee already deposited at the time of last grant of CTO (-)</b></td>
+                           
                             
                              @if(isset($footer['noc_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">0</b></td>
@@ -248,14 +241,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 
 
                         <tr style="background-color: #c2c2c200;">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">Total</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                            <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">Total</b></td>
+                           
                            
                              @if(isset($footer['noc_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_noc_fee']) }}</b></td>
@@ -274,134 +261,91 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_cto_air_fee']) }}</b></td>
                             @endif
                         </tr> 
-                        @if(isset($footer['total_water_penalty']))
+                        @if(isset($footer['total_water_penalty']) || isset($footer['total_air_penalty']))
                         <tr style="background-color: #c2c2c200;">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">CTO Water Penalty</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                           
+                            <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">CTO Penalty</b></td>
                            
                              @if(isset($footer['noc_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b></b></td>
                             @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                          
                             @if(isset($footer['water_regu_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
-                           
-                            @if(isset($footer['total_water_penalty']))
+                             @if(isset($footer['total_water_penalty']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_water_penalty']) }}</b></td>
                             @endif
+                            @if(isset($footer['air_regu_fee']))
+                            <td class="text-secondary-d2" style="text-align: center;"></td>
+                            @endif
+                            @if(isset($footer['total_air_penalty']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_air_penalty']) }}</b></td>
+                            @endif
+                           
+                           
                         </tr> 
                         @endif
 
-                        @if(isset($footer['penalty_water_amount']))
+                        @if(isset($footer['penalty_water_amount']) || isset($footer['total_air_penalty']))
                         <tr style="background-color: #c2c2c200;">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-95"></td>
-                            <td class="text-secondary-d2"  ><b style="font-size: 18px;">Fee already deposited CTO water penalty (-)</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                            <td colspan="6" class="text-secondary-d2"  style="text-align: right;"><b style="font-size: 18px;">Fee already deposited CTO penalty (-)</b></td>
                            
                              @if(isset($footer['noc_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b></b></td>
                             @endif
+                             @if(isset($footer['water_regu_fee']))
+                            <td class="text-secondary-d2" style="text-align: center;"></td>
+                            @endif
+                             @if(isset($footer['total_water_penalty']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['penalty_water_amount']) }}</b></td>
+                            @endif
+
                             @if(isset($footer['air_regu_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
                            
-                            @if(isset($footer['penalty_water_amount']))
+                           
+                           <!--  @if(isset($footer['penalty_water_amount']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['penalty_water_amount']) }}</b></td>
+                            @endif -->
+                            @if(isset($footer['total_air_penalty']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['penalty_air_amount']) }}</b></td>
                             @endif
                         </tr> 
                         @endif
 
                         
 
-                        @if(isset($footer['total_air_penalty']))
-                        <tr style="background-color: #c2c2c200;">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">CTO Air Penalty</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
-                           
-                             @if(isset($footer['noc_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b></b></td>
-                            @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
-                           
-                            @if(isset($footer['total_air_penalty']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_air_penalty']) }}</b></td>
-                            @endif
-                        </tr> 
-                        @endif
-                        @if(isset($footer['penalty_air_amount']))
-                        <tr style="background-color: #c2c2c200;">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-95"></td>
-                            <td class="text-secondary-d2"  ><b style="font-size: 18px;">Fee already deposited CTO air penalty (-)</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
-                           
-                             @if(isset($footer['noc_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b></b></td>
-                            @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
-                           
-                            @if(isset($footer['penalty_air_amount']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['penalty_air_amount']) }}</b></td>
-                            @endif
-                        </tr> 
-                        @endif
                          <tr style="background-color: #c2c2c200;">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">Total Payable Amount</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                            
+                            <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">Total Payable Amount</b></td>
+                           
                            
                              @if(isset($footer['noc_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"></td>
-                            @endif
+                            
                             @if(isset($footer['water_regu_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
+                             @if(isset($footer['total_water_penalty']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">
+                                <?php 
+                                if(!isset($footer['total_air_penalty'])){
+                                    echo money_format_change($footer['payable_amount']);
+                                }
+                            ?>
+                          </b></td>
+                            @endif
+                            @if(isset($footer['air_regu_fee']))
+                            <td class="text-secondary-d2" style="text-align: center;"></td>
+                            @endif
+                             @if(isset($footer['total_air_penalty']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['payable_amount']) }}</b></td>
+                            @endif
+
+                            <!-- <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;"></b></td> -->
                         </tr> 
                     </tbody>
                 </table>
