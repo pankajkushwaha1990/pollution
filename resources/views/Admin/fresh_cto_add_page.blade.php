@@ -1,5 +1,6 @@
  <div class="main-card mb-3 card">
     <div class="card-body">
+     <form method="GET" action="{{ url('admin/fresh-cto-fee-calculate') }}" id="myForm">
         <div class="form-row">
             <div class="col-md-12">
                 <div class="position-relative form-group">
@@ -10,8 +11,8 @@
                         <option value="{{ $industry->id }}">{{ $industry->industry_name }} </option>
                         @endforeach
                     </select>
-                    @if($errors->has('industry_name'))
-                    <span class="text text-danger">{{ $errors->first('industry_name') }}</span>
+                    @if($errors->has('industry_id'))
+                    <span class="text text-danger">{{ $errors->first('industry_id') }}</span>
                     @endif
                 </div>
             </div>
@@ -20,36 +21,37 @@
             <div class="col-md-6">
                 <div class="position-relative form-group">
                     <label for="exampleEmail11" class="">Industry Category <span class="previous_industry_category"></span></label>
-                    <select name="industry_category" id="revised_category_2" class="form-control" required="">
+                    <input type="hidden" name="previous_industry_category_id" id="previous_industry_category_id" class="form-control" required="">
+                    <select name="industry_category_id" id="industry_category_id" class="form-control" required="">
                     <option value="">Select Category</option>
                        @foreach($industry_category as $category)
                         <option  value="{{ $category->id }}">{{ $category->category_name }} </option>
                        @endforeach
                     </select>
-                                                         @if($errors->has('industry_mobile'))
-                                                        <span class="text text-danger">{{ $errors->first('industry_mobile') }}</span>
-                                                        @endif
-                                                                    </div>
-                                                                </div>
+                     @if($errors->has('industry_category_id'))
+                    <span class="text text-danger">{{ $errors->first('industry_category_id') }}</span>
+                    @endif
+            </div>
+        </div>
 
-                                                                 <div class="col-md-6">
-                                                                    <div class="position-relative form-group">
-                                                                    <label for="exampleEmail11" class="">Select NOC</label>
-                                                                   
+             <div class="col-md-6">
+                <div class="position-relative form-group">
+                <label for="exampleEmail11" class="">Select NOC</label>
+               
 
-                                                        <select name="industry_noc" id="industry_noc" class="form-control" required="">
-                                                                       
-                                                                       
-                                                                        <option value="no" selected="">NO</option>
-                                                                        <option value="yes">YES</option>
+                <select name="industry_noc" id="industry_noc" class="form-control" required="">
+                               
+                               
+                                <option value="no" selected="">NO</option>
+                                <option value="yes">YES</option>
 
-                                                                        
-                                                                        
-                                                                    </select>
+                                
+                    
+                </select>
 
-                                                        
-                                                                    </div>
-                                                                </div>
+    
+                </div>
+            </div>
 
 
                                                             </div>
@@ -57,8 +59,15 @@
                                                             <div class="form-row">
                                                                 <div class="col-md-6">
                                                                     <div class="position-relative form-group">
-                                                                    <label for="exampleEmail11" class="">Current CA <span class="previous_current_ca"></span></label>
-                                                                    <input name="current_ca" id="current_ca" placeholder="Enter Current CA" type="number"
+                                                                      <input type="hidden" name="previous_ca" id="previous_ca" class="form-control" required="">
+                                                                    <label for="exampleEmail11" class="">Current CA <span class="previous_current_ca"></span> &nbsp; &nbsp;  &nbsp; 
+            <div id="radioBtn" class="btn-group">
+              <a class="btn btn-default btn-sm  currency_format" format='num'  data-toggle="fun" data-title="Y">Num</a>
+              <a class="btn btn-default btn-sm active currency_format" format='lac' style="background-color: #18b3ef;" data-toggle="fun" data-title="X">Lac</a>
+              <a class="btn btn-default btn-sm notActive currency_format" format='cr' data-toggle="fun" data-title="N">CR</a>
+            </div>
+            <input type="hidden" name="fun" id="fun"></label>
+                                                                    <input name="current_ca" id="current_ca" placeholder="Enter Current CA" type="text"
                                                                                                          class="form-control" required="">
 
                                                                     
@@ -175,17 +184,19 @@
 
                                                             <div class="form-row">
                                                                 <div class="col-md-10"></div>
-                                                                <div class="col-md-1">
+                                                             <!--    <div class="col-md-1">
                                                                     <div class="position-relative form-group">
                                                                      <button style="width: -webkit-fill-available;" style="display: none;" type="button" id="save" value="save" class="btn btn-success">Save</button>
                                                                     </div>
-                                                                </div>
+                                                                </div> -->
 
-                                                                 <div class="col-md-1">
-                                                                    <div class="position-relative form-group">
-                                                                     <button type="button" value="calculate" id="calculate" class="btn btn-success">Calculate</button>
-                                                                    </div>
-                                                                </div>
+                                                                
+                                                                    <div class="col-md-2">
+                
+                 <button style="width: 100%;" type="submit" value="calculate" name="action" id="calculate" class="btn btn-success">Calculate</button>
+               
+            </div>
+                                                                   
                                                             </div>
                                                                
                                                                
@@ -195,27 +206,60 @@
                                                         </div>
                                                     </div>
 <script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+
 <script type="text/javascript">
-    $('#industry_name').change(function(){
+  var format = $('.currency_format.active').attr('format');
+  $('.currency_format').click(function(){
+      $('.currency_format').css('background-color','').removeClass('active');
+      $(this).css('background-color','#18b3ef').addClass('active');
+  })
+</script>
+
+<script type="text/javascript">
+  $('#myForm').on('submit', function(e) {
+      e.preventDefault(); // prevent native submit
+      var format = $('.currency_format.active').attr('format');
+      
+      $(this).ajaxSubmit({
+          success: function(response) {
+            $('#calculation_result_here').html(response);
+         },
+         data: { action: 'calculate','format':format}
+
+      })
+  });
+</script>
+
+
+
+<script type="text/javascript">
+    $('#industry_id').change(function(){
             $('#save').hide();
-            var industry_id = $('#industry_name').val();
+            var industry_id = $('#industry_id').val();
             $.ajax({url: "{{ url('admin/industry-id-to-category') }}/"+industry_id, success: function(result){
                      if(result.status=='success'){
-                        if(result.report==null){
-                            var category_id = result.data.id;
-                            $('#industry_noc').attr('readonly',false);
-                             $('#industry_noc').attr('disabled',false);
+                        if(result.report.length==0){
+                             $('#industry_category_id').val(result.data.id);
+                             $('#previous_industry_category_id').val(result.data.id);
+                             $('.previous_industry_category').text('');
+                             $('.previous_valid_upto').text('');
+                              $('.previous_current_ca').text('');
+                             // $('#industry_noc').attr('readonly',false);
+                             // $('#industry_noc').css('pointer-events','all');
                         }else{
-                             var category_id = result.report.industry_category_id;
-                             $('#industry_noc').attr('readonly',true);
-                             $('#industry_noc').attr('disabled',true);
-                        }
-                        $('#revised_category_2').val(category_id);
-                        $('.previous_industry_category').text("("+result.report.industry_type+")");
-                        $('.previous_industry_type').text("("+result.report.industry_type+")");
-                        $('.previous_valid_upto').text("(CTE Valid Upto "+result.report.valid_upto.split("-").reverse().join("/")+")");
-                        $('.previous_current_ca').text("("+result.report.current_ca+")");
-                        $('.previous_current_ca_value').text("("+result.report.current_ca+")");
+                             $('#industry_category_id').val(result.report.industry_category_id);
+                              $('#previous_industry_category_id').val(result.report.industry_category_id);
+                             $('.previous_industry_category').text("("+result.report.industry_type+")");
+                             $('.previous_valid_upto').text("(CTE Valid Upto "+result.report.valid_upto.split("-").reverse().join("/")+")");
+                             $('.previous_current_ca').text("("+result.report.current_ca+")");
+                             // $('#industry_noc').attr('readonly',true);
+                             // $('#industry_noc').css('pointer-events','none');
+                        }                   
+                        
+                        //$('.previous_current_ca_value').text("("+result.report.new_ca+")");
                      }
                 }});
             $('#report_view').hide();
@@ -231,40 +275,6 @@
             uiLibrary: 'bootstrap',
             format: 'dd/mm/yyyy'
         });
-</script>
-<script type="text/javascript">
-    $('#calculate,#save').click(function(){
-            $('#report_view').hide();
-            $('.loader').show();
-            
-            var industry_id           = $('#industry_name').val();
-            var industry_category     = $('#revised_category_2').val();
-            var current_ca            = $('#current_ca').val();
-            var applied_date          = $('#applied_date').val();
-            var deposited_air_amount  = $('#deposited_air_amount').val();
-            var deposited_water_amount   = $('#deposited_water_amount').val();
-            var duration               = $('#duration').val();
-            var concent_type           = $('#concent_type').val();
-            var industry_noc           = $('#industry_noc').val();
-            var action                 = $(this).val();
-
-
-            $.ajax({
-                url: "{{ url('admin/fresh-cto-fee-calculate') }}",
-                data: {
-                        'industry_id':industry_id,'industry_category':industry_category,'current_ca':current_ca,
-                        'applied_date':applied_date,'deposited_air_amount':deposited_air_amount,
-                        'deposited_water_amount':deposited_water_amount,'duration':duration,
-                        'concent_type':concent_type,'action':action,'industry_noc':industry_noc
-                     },
-                success: function(result){
-                    $('.loader').hide();
-                     $('#calculation_result_here').html(result);
-                     $('#save').show();
-                    
-                }});
-        }) 
-
 </script>
 <script type="text/javascript">
   $('#industry_noc').change(function(){

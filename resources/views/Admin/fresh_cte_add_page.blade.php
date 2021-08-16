@@ -94,13 +94,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-  $('.convert_fields').keyup(function(){
-     var current_value = $(this).val();
-     $(this).attr('original_value',current_value);
-  })
-</script>
-
-<script type="text/javascript">
   var format = $('.currency_format.active').attr('format');
   $('.currency_format').click(function(){
       $('.currency_format').css('background-color','').removeClass('active');

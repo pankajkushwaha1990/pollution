@@ -159,14 +159,18 @@
     $('#industry_id').change(function(){
             $('#save_2').hide();
             var industry_id = $('#industry_id').val();
+            var format = $('.currency_format.active').attr('format');
             $('#previous_category_name,#previous_category_id,#new_category_id,#previous_ca,#new_ca,#previous_apply_date,#current_apply_date').val('');
-            $.ajax({url: "{{ url('admin/industry-id-to-category') }}/"+industry_id, success: function(result){
+            $.ajax({
+              url: "{{ url('admin/industry-id-to-category-cte-extension') }}",
+              data:{'industry_id':industry_id,'format':format}, 
+              success: function(result){
                      if(result.status=='success'){
                         $('#previous_category_name').val(result.data.category_name);
                         $('#previous_category_id').val(result.data.id);
                         $('#new_category_id').val(result.data.id);
                         $('#previous_ca').val(result.report.current_ca);
-                        $('#new_ca').val(result.report.current_ca/100000);
+                        $('#new_ca').val(result.report.current_ca);
                         $('#previous_apply_date').val(result.report.applied_on.split("-").reverse().join("/"));
                         $('#current_apply_date').val(result.report.valid_upto.split("-").reverse().join("/"));
                      }

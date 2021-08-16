@@ -71,6 +71,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 	     Route::get('/regulation-add',[AdminController::class,  'regulation_add'])->name('regulation_add');
     Route::get('/regulation-fee-calculate',[AdminController::class,  'regulation_fee_calculate'])->name('regulation_fee_calculate');
 
+    Route::get('/industry-id-to-category-cte-extension',[AdminController::class,  'industry_id_to_category_cte_extension'])->name('industry_id_to_category_cte_extension');
+
 
     
 
