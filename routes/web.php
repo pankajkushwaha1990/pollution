@@ -41,6 +41,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
     Route::get('/fresh-cto-add',[AdminController::class,  'fresh_cto_add'])->name('fresh_cto_add');
     // Route::get('/fee-calculate-cto',[AdminController::class,  'fee_calculate_cto'])->name('fee_calculate_cto');
 
+	Route::get('/generated_regulation_list',[AdminController::class,  'generated_regulation_list'])->name('generated_regulation_list');
+
+
     Route::get('/fresh-cte-add-page',[AdminController::class,  'fresh_cte_add_page'])->name('fresh_cte_add_page');
     Route::get('/extension-cte-add-page',[AdminController::class,  'extension_cte_add_page'])->name('extension_cte_add_page');
 
@@ -72,6 +75,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
     Route::get('/regulation-fee-calculate',[AdminController::class,  'regulation_fee_calculate'])->name('regulation_fee_calculate');
 
     Route::get('/industry-id-to-category-cte-extension',[AdminController::class,  'industry_id_to_category_cte_extension'])->name('industry_id_to_category_cte_extension');
+
+
+
+     Route::get('/regulation_pdf/{id}/{pdf?}',[AdminController::class,  'regulation_pdf'])->name('regulation_pdf');
 
 
     

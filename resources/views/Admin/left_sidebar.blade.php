@@ -97,12 +97,12 @@
                                             </a>
                                         </li>
 
-                                       <!--  <li>
-                                            <a href="{{ route('company_financial') }}">
+                                        <li>
+                                            <a href="{{ route('generated_regulation_list') }}">
                                                 <i class="metismenu-icon pe-7s-graph1">
-                                                </i>Records
+                                                </i>Generated Regulation List
                                             </a>
-                                        </li> -->
+                                        </li>
                                     </ul>
                                 </li>
 

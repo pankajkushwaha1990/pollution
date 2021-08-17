@@ -878,6 +878,9 @@ public function regulation_fee_with_both($request){
   }
 
   private function number_of_days($from_date=null,$to_date=null){
+      if($to_date==$from_date){
+        return 1;
+      }
       $days = floor((strtotime($to_date) - strtotime($from_date)) / 86400);
       if($days==364){
          $days = 365;
@@ -1065,6 +1068,30 @@ public function regulation_fee_with_both($request){
            return $pdf->download($response['header']['industry_name'].'_Fresh_CTE.pdf');
          }      
          return view('Admin.fresh_cte_calculation_pdf_page_view',$response);
+  }
+
+   public function regulation_pdf($fresh_cte_id,$pdf=null){
+          $response = DB::table('reports_regulation')->where('id',$fresh_cte_id)->first();
+          $response  = [
+            'header'=>json_decode($response->header,true),'table_head'=>json_decode($response->table_head,true),
+           'table_rows'=>json_decode($response->table_rows,true),'footer'=>json_decode($response->footer,true),'id'=>$fresh_cte_id
+         ];
+         if($pdf){
+           set_time_limit(300);
+           view()->share($response);
+           $pdf = PDF::loadView('Admin.regulation_calculation_pdf_page', $response);
+           $pdf->getDomPDF()->setHttpContext(
+                stream_context_create([
+                    'ssl' => [
+                        'allow_self_signed'=> TRUE,
+                        'verify_peer' => FALSE,
+                        'verify_peer_name' => FALSE,
+                    ]
+                ])
+            );
+           return $pdf->download($response['header']['industry_name'].'_Regulation.pdf');
+         }      
+         return view('Admin.regulation_pdf_page_view',$response);
   }
 
   public function renew_cto_pdf($fresh_cte_id,$pdf=null){
@@ -1661,6 +1688,12 @@ public function regulation_fee_with_both($request){
         return view('Admin.generated_cte_list',['reports'=>$reports,'extension'=>$extension]);
   }
 
+
+    public function generated_regulation_list(){
+        $reports = DB::table('reports_regulation')->join('industries','industries.id','=','reports_regulation.industry_id')->select('reports_regulation.*','industries.industry_name as industry_name')->get();
+        return view('Admin.generated_regulation_list',['reports'=>$reports]);
+  }
+
   public function generated_cto_list(){
       $reports = DB::table('report_cto')->join('industries','industries.id','=','report_cto.industry_id')
                 ->select('report_cto.*','industries.industry_name as industry_name')->get();
@@ -1722,8 +1755,8 @@ public function regulation_fee_with_both($request){
   }
 
 private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,$request){
-   $applied_date  = $this->add_1_day_y_m_d($request->applied_on_view);   
-   $end_date      = $this->date_d_m_y($this->add_year($applied_date,3));
+   $applied_date  = $this->date_y_m_d($request->applied_on_view);   
+   // $end_date      = $this->date_d_m_y($this->add_year($applied_date,3));
    $tenure_to     = $this->tenure_by_category_id($request->industry_category_id_new);
    $end_date      = $this->date_y_m_d($request->current_applied_date);
    $to_date       = $this->tenure_to_date($applied_date,$tenure_to);
@@ -1752,8 +1785,8 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
    $final_cto_air_fee   = $total_cto_air_fee;
    $payable_amount      = $final_cto_air_fee;
    return $payable_amount;
-  }
-  private function renew_cto_no_change_air_calculation($request){
+}
+private function renew_cto_no_change_air_calculation($request){
    $applied_date  = $this->add_1_day_y_m_d($request->current_applied_date);
     $varied_paid  = 0;
     $varied_exist  = FALSE;
@@ -2889,7 +2922,17 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
 
   private function renew_cto_ca_change_air_calculation($request){
    $applied_date         = $this->date_y_m_d($request->current_applied_date);
-   $current_applied_date  = $this->date_y_m_d($request->current_applied_date);
+   $varied_paid  = 0;
+   $varied_exist  = FALSE;
+   if($request->varied=='varied'){
+    $applied_date  = $this->date_y_m_d($request->applied_on_view);
+    $varied_paid   =  $this->renew_varied_cto_no_change_air_calculation($request->applied_on_view,$request->current_applied_date,$request); 
+    $varied_exist  = TRUE;
+   }
+
+
+
+   $current_applied_date  = $applied_date;
    $end_date      = $this->date_d_m_y($this->add_year($current_applied_date,$request->duration));
    $tenure_to     = $this->tenure_by_category_id($request->industry_category_id_new);
    $end_date      = $this->date_y($end_date)."-".$tenure_to;
@@ -2931,7 +2974,7 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
     }      
    }
    $final_cto_air_fee   = $total_cto_air_fee-$request->deposited_air_amount;
-   $payable_amount      = $final_cto_air_fee+$total_noc_fee+$air_regu_fee;
+   $payable_amount      = $final_cto_air_fee+$total_noc_fee+$air_regu_fee-$varied_paid;
 
    
    $header = [
@@ -2950,7 +2993,9 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
             'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','air_regu_fee'=>$air_regu_fee,
-            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee
+            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'varied_exist'=>$varied_exist,'varied_paid'=>$varied_paid,
+            'varied_from'=>$request->applied_on_view,'varied_to'=>$request->current_applied_date
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Air FEE(Regu)','CTO Air Fee'];
         $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
@@ -2959,7 +3004,18 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
 
   private function renew_cto_ca_change_water_calculation($request){
    $applied_date  = $this->add_1_day_y_m_d($request->current_applied_date);
-   $current_applied_date  = $this->date_y_m_d($request->current_applied_date);
+    $varied_paid  = 0;
+    $varied_exist  = FALSE;
+   if($request->varied=='varied'){
+    $applied_date  = $this->date_y_m_d($request->applied_on_view);
+    $varied_paid   =  $this->renew_varied_cto_no_change_air_calculation($request->applied_on_view,$request->current_applied_date,$request); 
+    $varied_exist  = TRUE;
+   }
+
+
+
+
+   $current_applied_date  =  $applied_date;
 
    $end_date      = $this->date_d_m_y($this->add_year($current_applied_date,$request->duration));
    $tenure_to     = $this->tenure_by_category_id($request->industry_category_id_new);
@@ -3002,7 +3058,7 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
     }      
    }
    $final_cto_water_fee = $total_cto_water_fee-$request->deposited_water_amount;
-   $payable_amount      = $final_cto_water_fee+$total_noc_fee+$water_regu_fee;
+   $payable_amount      = $final_cto_water_fee+$total_noc_fee+$water_regu_fee-$varied_paid;;
   
 
    
@@ -3025,6 +3081,8 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
             'final_cto_water_fee'=>$final_cto_water_fee,'total_cto_water_fee'=>$total_cto_water_fee,
             'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
             'ca_diffrence'=>'exist','noc_fee'=>'exist','water_regu_fee'=>$water_regu_fee,
+            'varied_exist'=>$varied_exist,'varied_paid'=>$varied_paid,
+            'varied_from'=>$request->applied_on_view,'varied_to'=>$request->current_applied_date
           ];
           $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Water FEE(Regu)','CTO Water Fee'];
     
@@ -3036,7 +3094,16 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
 
   private function renew_cto_ca_change_both_calculation($request){
    $applied_date  = $this->add_1_day_y_m_d($request->current_applied_date);
-   $current_applied_date  = $this->date_y_m_d($request->current_applied_date);
+     $varied_paid  = 0;
+    $varied_exist  = FALSE;
+   if($request->varied=='varied'){
+    $applied_date  = $this->date_y_m_d($request->applied_on_view);
+    $varied_paid   =  $this->renew_varied_cto_no_change_air_calculation($request->applied_on_view,$request->current_applied_date,$request); 
+    $varied_exist  = TRUE;
+   }
+
+
+   $current_applied_date  = $applied_date;
    $end_date      = $this->date_d_m_y($this->add_year($current_applied_date,$request->duration));
    $tenure_to     = $this->tenure_by_category_id($request->industry_category_id_new);
    $end_date      = $this->date_y($end_date)."-".$tenure_to;
@@ -3083,7 +3150,7 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
    }
    $final_cto_water_fee = $total_cto_water_fee-$request->deposited_water_amount;
    $final_cto_air_fee   = $total_cto_air_fee-$request->deposited_air_amount;
-   $payable_amount      = $final_cto_water_fee+$final_cto_air_fee+$total_noc_fee+$water_regu_fee+$air_regu_fee;
+   $payable_amount      = $final_cto_water_fee+$final_cto_air_fee+$total_noc_fee+$water_regu_fee+$air_regu_fee-($varied_paid+$varied_paid);
 
    
    $header = [
@@ -3103,7 +3170,9 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
             'deposited_air_amount'=>$request->deposited_air_amount,'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'total_cto_water_fee'=>$total_cto_water_fee,'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_water_fee'=>$final_cto_water_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'ca_diffrence'=>'exist','noc_fee'=>'exist',
-            'water_regu_fee'=>$water_regu_fee,'air_regu_fee'=>$air_regu_fee,'total_noc_fee'=>$total_noc_fee
+            'water_regu_fee'=>$water_regu_fee,'air_regu_fee'=>$air_regu_fee,'total_noc_fee'=>$total_noc_fee,
+             'varied_exist'=>$varied_exist,'varied_paid'=>$varied_paid,
+            'varied_from'=>$request->applied_on_view,'varied_to'=>$request->current_applied_date
           ];
           $table_head = [
             '#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO-Water FEE(Regu)','CTO Water Fee',
@@ -4154,7 +4223,7 @@ private function fresh_cto_ca_change_air_calculation($request){
               'new_ca'=>$request->new_ca,'previous_apply_date'=>$request->previous_apply_date,'current_apply_date'=>$request->valid_upto,
               'view_apply_on'=>$request->view_apply_on,'concent_type'=>$request->concent_type,
               'deposited_date'=>$request->deposited_date,'duration'=>$request->duration,'industry_category'=>ucfirst(strtok($category->fee_column, '_')),
-              'applied_date'=>$this->date_y_m_d($request->valid_upto),'total_cte_fee'=>$total_cte_fee,'ca_certificate_amount'=>$request->new_ca,'view_apply_on'=>$request->applied_date
+              'applied_date'=>$this->date_y_m_d($request->valid_upto),'total_cte_fee'=>$total_cto_air_fee,'ca_certificate_amount'=>$request->new_ca,'view_apply_on'=>$request->applied_date
             ];
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,
@@ -4238,9 +4307,9 @@ private function fresh_cto_ca_change_air_calculation($request){
           echo "dg";
           $response = $this->fresh_cto_ca_change_air_calculation($request);
         }
-        elseif($category_change==TRUE && $ca_change==TRUE && $industry_noc=='no' && $concent_type=='air'){
-          echo "dg";
-          $response = $this->fresh_cto_ca_change_air_calculation($request);
+        elseif($category_change==FALSE && $ca_change==TRUE && $industry_noc=='no' && $concent_type=='water'){
+          echo "eh";
+          $response = $this->fresh_cto_no_change_water_noc_calculation($request);
         }
 
 
