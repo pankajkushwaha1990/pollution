@@ -62,6 +62,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
      Route::get('/extension-cte-pdf/{id}/{pdf?}',[AdminController::class,  'extension_cte_pdf'])->name('extension_cte_pdf');
      Route::get('/export_fresh_cte/{id}',[AdminController::class,  'export_fresh_cte'])->name('export_fresh_cte');
 
+     Route::get('/export_fresh_regulation/{id}',[AdminController::class,  'export_fresh_regulation'])->name('export_fresh_regulation');
+
      Route::get('/fresh-extension-pdf/{id}/{pdf?}',[AdminController::class,  'fresh_extension_pdf'])->name('fresh_extension_pdf');
 
     Route::get('/export_fresh_extension/{id}',[AdminController::class,  'export_fresh_extension'])->name('export_fresh_extension');

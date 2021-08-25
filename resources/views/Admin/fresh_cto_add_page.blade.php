@@ -247,16 +247,16 @@
                              $('.previous_industry_category').text('');
                              $('.previous_valid_upto').text('');
                               $('.previous_current_ca').text('');
-                             // $('#industry_noc').attr('readonly',false);
-                             // $('#industry_noc').css('pointer-events','all');
+                             $('#industry_noc').attr('readonly',false);
+                             $('#industry_noc').css('pointer-events','all');
                         }else{
                              $('#industry_category_id').val(result.report.industry_category_id);
                               $('#previous_industry_category_id').val(result.report.industry_category_id);
                              $('.previous_industry_category').text("("+result.report.industry_type+")");
                              $('.previous_valid_upto').text("(CTE Valid Upto "+result.report.valid_upto.split("-").reverse().join("/")+")");
                              $('.previous_current_ca').text("("+result.report.current_ca+")");
-                             // $('#industry_noc').attr('readonly',true);
-                             // $('#industry_noc').css('pointer-events','none');
+                             $('#industry_noc').attr('readonly',true);
+                             $('#industry_noc').css('pointer-events','none');
                         }                   
                         
                         //$('.previous_current_ca_value').text("("+result.report.new_ca+")");

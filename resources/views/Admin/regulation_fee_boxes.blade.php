@@ -48,14 +48,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                      <div class="col-12">
                         <!-- <hr> -->
                     </div>
-                    <div class="col-12">
-                        <div class="text-center text-100">
-                            <!-- <i class="text-success-m2 mr-1"></i> -->
-                        <!-- <span class="text-sm text-grey-m2 align-middle">Industry Type & Duration:</span> -->
-                        <span class="text-600 text-110 text-blue align-middle">Receipt</span>
-                        
-                        </div>
-                    </div>
+                   
                     <div class="col-12">
                         <div class="text-center text-150">
                             <!-- <i class="text-success-m2 mr-1"></i> -->

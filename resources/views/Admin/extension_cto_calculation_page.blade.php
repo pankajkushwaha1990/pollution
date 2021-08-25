@@ -83,7 +83,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Previous CTO Expired On:</span>
+                             <span class="text-sm text-grey-m2 align-middle">Previous CTO Applied Date:</span>
                             <span class="text-600 text-110 text-blue align-middle" >{{ $header['current_apply_date'] }}</span>
                         
                         </div>
@@ -400,14 +400,14 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             @if(isset($footer['water_regu_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;"></b></td>
                             @endif
-                            @if(isset($footer['final_cto_water_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['varied_paid']) }}</b></td>
+                            @if(isset($footer['varied_water_fee']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['varied_water_fee']) }}</b></td>
                             @endif
                               @if(isset($footer['air_regu_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;"></b></td>
                             @endif
-                            @if(isset($footer['final_cto_air_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['varied_paid']) }}</b></td>
+                            @if(isset($footer['varied_air_fee']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['varied_air_fee']) }}</b></td>
                             @endif
                         </tr> 
 

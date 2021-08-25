@@ -142,7 +142,7 @@ hr {
  <style>
 tr:nth-child(even) {background-color: #c2c2c2;}
  @media  print{
-   table tr:nth-last-child(n+4) td {
+   table tr:nth-last-child(n+7) td {
     border: 1px solid black !important;
     color: black !important;
     text-align: center !important;
@@ -237,14 +237,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                      <div class="col-12">
                         <!-- <hr> -->
                     </div>
-                    <div class="col-12">
-                        <div class="text-center text-100">
-                            <!-- <i class="text-success-m2 mr-1"></i> -->
-                        <!-- <span class="text-sm text-grey-m2 align-middle">Industry Type & Duration:</span> -->
-                        <span class="text-600 text-110 text-blue align-middle">Receipt</span>
-                        
-                        </div>
-                    </div>
+                   
                     <div class="col-12">
                         <div class="text-center text-150">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
@@ -552,8 +545,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
         <div class="row">
                 <div class="col-md-6"></div>
                 <div class="col-md-2"><button style="width: 100%;" id="print_button" class="btn btn-success">Print</button></div>
-                <div class="col-md-2"><a href="{{ route('export_fresh_cte',['id'=>$id]) }}"><button style="width: 100%;" id="save_cte" class="btn btn-success">Excel</button></a></div>
-                <div class="col-md-2"><a href="{{ route('fresh_cte_pdf',['id'=>$id,'pdf'=>'true']) }}"><button style="width: 100%;" id="save_cte" class="btn btn-warning">PDF</button></a></div>
+                <div class="col-md-2"><a href="{{ route('export_fresh_regulation',['id'=>$id]) }}"><button style="width: 100%;" id="save_cte" class="btn btn-success">Excel</button></a></div>
+                <div class="col-md-2"><a href="{{ route('regulation_pdf',['id'=>$id,'pdf'=>'true']) }}"><button style="width: 100%;" id="save_cte" class="btn btn-warning">PDF</button></a></div>
         </div>
     </div>
 </div>
