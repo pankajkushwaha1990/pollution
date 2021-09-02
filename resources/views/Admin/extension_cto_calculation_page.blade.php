@@ -470,11 +470,13 @@ tr:nth-child(even) {background-color: #c2c2c2;}
   $('#save_cte').click(function(e){
       e.preventDefault(); // prevent native submit
       var format = $('.currency_format.active').attr('format');
+      var varied = $('.varied_calculation.active').attr('format');
+
         $('#myForm').ajaxSubmit({
           success: function(response) {
             $('#calculation_result_here').html(response);
          },
-         data: { action: 'save','format':format}
+         data: { action: 'save','format':format,'varied':varied}
 
       })
   });

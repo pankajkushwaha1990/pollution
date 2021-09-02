@@ -90,6 +90,7 @@ border-spacing: 0px;
 	    <td >{{ $detail['from_date'] }}</td>
 	    <td >{{ $detail['to_date'] }}</td>
 	    <td >{{ $detail['days'] }}</td>
+          <td>{{ money_format_change($detail['ca_certificate_amount']) }}</td>
 	     @if(isset($footer['ca_diffrence']))
         <td >{{ money_format_change($detail['ca_diffrence']) }}</td>
         @endif
@@ -125,12 +126,7 @@ border-spacing: 0px;
                              @if(isset($footer['noc_fee']))
                             <td align="right"><b>{{ money_format_change($footer['total_noc_fee']) }}</b></td>
                             @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td align="right"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td align="right"></td>
-                            @endif
+
                             @if(isset($footer['total_cto_water_fee']))
                             <td align="right"><b style="font-size: 18px;">{{ money_format_change($footer['total_cto_water_fee']) }}</b></td>
                             @endif
@@ -142,6 +138,10 @@ border-spacing: 0px;
                         </tr> 
                         <tr >
                             <!-- <td></td> -->
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td  ></td>
                             
                             <td align="right"><b style="font-size: 18px;">Fee already deposited at the time of last grant of CTO (-)</b></td>
                             @if(isset($footer['ca_diffrence']))
@@ -151,12 +151,7 @@ border-spacing: 0px;
                              @if(isset($footer['noc_fee']))
                             <td align="right" style="text-align: center;"><b>0</b></td>
                             @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
+                           
 
                             @if(isset($footer['deposited_water_amount']))
                             <td align="right" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['deposited_water_amount']) }}</b></td>
@@ -182,12 +177,7 @@ border-spacing: 0px;
                              @if(isset($footer['noc_fee']))
                             <td align="right" style="text-align: center;"><b>{{ money_format_change($footer['total_noc_fee']) }}</b></td>
                             @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
+                           
                             @if(isset($footer['final_cto_water_fee']))
                             <td align="right" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_cto_water_fee']) }}</b></td>
                             @endif
@@ -201,7 +191,7 @@ border-spacing: 0px;
                             <td></td>
                             <td></td>
                             <td ></td>
-                            <td align="right" style="text-align: center;" ><b style="font-size: 18px;">CTO Water Penalty</b></td>
+                            <td align="right" style="text-align: center;" ><b style="font-size: 18px;">CTO Penalty</b></td>
                             @if(isset($footer['ca_diffrence']))
                             <td align="right" style="text-align: center;"></td>
                             @endif
@@ -209,45 +199,19 @@ border-spacing: 0px;
                              @if(isset($footer['noc_fee']))
                             <td align="right" style="text-align: center;"><b></b></td>
                             @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
+                           
                            
                             @if(isset($footer['total_water_penalty']))
                             <td align="right" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_water_penalty']) }}</b></td>
                             @endif
+
+                             @if(isset($footer['total_air_penalty']))
+                            <td align="right" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_air_penalty']) }}</b></td>
+                            @endif
                         </tr> 
                         @endif
 
-                        @if(isset($footer['total_air_penalty']))
-                        <tr >
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td align="right" ><b >CTO Air Penalty</b></td>
-                            @if(isset($footer['ca_diffrence']))
-                            <td align="right"></td>
-                            @endif
-                           
-                             @if(isset($footer['noc_fee']))
-                            <td align="right"><b></b></td>
-                            @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td align="right"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td align="right"></td>
-                            @endif
-                           
-                            @if(isset($footer['total_air_penalty']))
-                            <td align="right">{{ money_format_change($footer['total_air_penalty']) }}</b></td>
-                            @endif
-                        </tr> 
-                        @endif
+                       
                          <tr >
                             <td></td>
                             <td></td>
@@ -261,12 +225,7 @@ border-spacing: 0px;
                              @if(isset($footer['noc_fee']))
                             <td align="right" style="text-align: center;"></td>
                             @endif
-                            @if(isset($footer['air_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
-                            @if(isset($footer['water_regu_fee']))
-                            <td align="right" style="text-align: center;"></td>
-                            @endif
+                           
                             <td align="right" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['payable_amount']) }}</b></td>
                         </tr> 
 	
