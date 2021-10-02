@@ -45,31 +45,38 @@
         </div>
 
         <div class="form-row">
+
+          <div class="col-md-6">
+            <div class="position-relative form-group">
+                <label for="exampleEmail11" class="">Duration</label>
+                <input name="duration" id="duration" placeholder="Enter Duration" type="number" class="form-control" required="">
+            </div>
+          </div>        
           <div class="col-md-6">
                 <div class="position-relative form-group">
                     <label for="exampleEmail11" class="">Deposited Amount</label>
                     <input required="" value="0"  name="deposited_amount" placeholder="Enter Deposited Amount" type="number" class="form-control convert_fields" required="">
                 </div>
           </div>
-          <div class="col-md-6">
+
+        <!-- </div> -->
+         <!--  <div class="col-md-6">
                <div class="position-relative form-group">
                  <label for="exampleEmail11" class="">Deposited Date</label>
                  <input required="" name="deposited_date" id="deposited_date" placeholder="Enter Deposited Date" type="text" class="form-control" required="">
                </div>
-          </div>
+          </div> -->
         </div>
 
-        <div class="form-row">
+       <!--  <div class="form-row">
           <div class="col-md-6">
             <div class="position-relative form-group">
                 <label for="exampleEmail11" class="">Duration</label>
                 <input name="duration" id="duration" placeholder="Enter Duration" type="number" class="form-control" required="">
             </div>
-          </div>
+          </div>        
 
-          
-
-        </div>
+        </div> -->
 
         <div class="form-row">
             <div class="col-md-10"></div>
@@ -88,8 +95,8 @@
       </form>
     </div>
 </div>
-<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 

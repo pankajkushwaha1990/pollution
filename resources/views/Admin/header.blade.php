@@ -1,3 +1,14 @@
+<style type="text/css">
+  .glyphicon-chevron-left:before {
+   content: " < ";
+   font-size: 20px;
+}
+
+.glyphicon-chevron-right:before {
+   content: " > ";
+   font-size: 20px;
+}
+</style>
                     <div class="header-mobile-wrapper">
                         <div class="app-header__logo">
                             <a href="#" data-toggle="tooltip" data-placement="bottom" title="KeroUI Admin Template" class="logo-src"></a>

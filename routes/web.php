@@ -39,6 +39,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 
 	Route::get('/generated-cte-list',[AdminController::class,  'generated_cte_list'])->name('generated_cte_list');
     Route::get('/fresh-cto-add',[AdminController::class,  'fresh_cto_add'])->name('fresh_cto_add');
+    Route::get('/reverse_calculation',[AdminController::class,  'reverse_calculation'])->name('reverse_calculation');
     // Route::get('/fee-calculate-cto',[AdminController::class,  'fee_calculate_cto'])->name('fee_calculate_cto');
 
 	Route::get('/generated_regulation_list',[AdminController::class,  'generated_regulation_list'])->name('generated_regulation_list');
@@ -48,9 +49,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
     Route::get('/extension-cte-add-page',[AdminController::class,  'extension_cte_add_page'])->name('extension_cte_add_page');
 
     Route::get('/fresh-cto-add-page',[AdminController::class,  'fresh_cto_add_page'])->name('fresh_cto_add_page');
+    Route::get('/reverse_calculation_add_page',[AdminController::class,  'reverse_calculation_add_page'])->name('reverse_calculation_add_page');
+
+    
     Route::get('/fresh-cto-fee-calculate',[AdminController::class,  'fresh_cto_fee_calculate'])->name('fresh_cto_fee_calculate');
+    Route::get('/reverse_calculation_cto_fee',[AdminController::class,  'reverse_calculation_cto_fee'])->name('reverse_calculation_cto_fee');
 
     Route::get('/extension-cto-add-page',[AdminController::class,  'extension_cto_add_page'])->name('extension_cto_add_page');
+     Route::get('/reverse_renew_calculation_add_page',[AdminController::class,  'reverse_renew_calculation_add_page'])->name('reverse_renew_calculation_add_page');
 
     Route::get('/industry-id-to-category-cto/{id}',[AdminController::class,  'industry_id_to_category_cto'])->name('industry_id_to_category_cto');
     Route::get('/extension-cto-fee-calculate',[AdminController::class,  'extension_cto_fee_calculate'])->name('extension_cto_fee_calculate');    
@@ -64,6 +70,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 
      Route::get('/export_fresh_regulation/{id}',[AdminController::class,  'export_fresh_regulation'])->name('export_fresh_regulation');
 
+      Route::get('/export_renew_cto/{id}',[AdminController::class,  'export_renew_cto'])->name('export_renew_cto');
+
      Route::get('/fresh-extension-pdf/{id}/{pdf?}',[AdminController::class,  'fresh_extension_pdf'])->name('fresh_extension_pdf');
 
      Route::get('/fresh_cto_pdf/{id}/{pdf?}',[AdminController::class,  'fresh_cto_pdf'])->name('fresh_cto_pdf');
@@ -71,13 +79,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 
     Route::get('/export_fresh_extension/{id}',[AdminController::class,  'export_fresh_extension'])->name('export_fresh_extension');
 
+    Route::get('/export_fresh_cto_extension/{id}',[AdminController::class,  'export_fresh_cto_extension'])->name('export_fresh_cto_extension');
+
     Route::get('/renew-cto-calculate',[AdminController::class,  'renew_cto_fee_calculate'])->name('renew_cto_fee_calculate');
+     Route::get('/reverse-renew-cto-calculate',[AdminController::class,  'revrese_renew_cto_fee_calculate'])->name('revrese_renew_cto_fee_calculate');
 
 	Route::get('/generated-cto-list',[AdminController::class,  'generated_cto_list'])->name('generated_cto_list');
 	 Route::get('/renew-cto-pdf/{id}/{pdf?}',[AdminController::class,  'renew_cto_pdf'])->name('renew_cto_pdf');
 
 	     Route::get('/regulation-add',[AdminController::class,  'regulation_add'])->name('regulation_add');
     Route::get('/regulation-fee-calculate',[AdminController::class,  'regulation_fee_calculate'])->name('regulation_fee_calculate');
+    Route::get('/reverse-regulation-fee-calculate',[AdminController::class,  'reverse_regulation_fee_calculate'])->name('reverse_regulation_fee_calculate');
+
+    Route::get('/reverse_regulation_calculation_add_page',[AdminController::class,  'reverse_regulation_calculation_add_page'])->name('reverse_regulation_calculation_add_page');
 
     Route::get('/industry-id-to-category-cte-extension',[AdminController::class,  'industry_id_to_category_cte_extension'])->name('industry_id_to_category_cte_extension');
 

@@ -1,7 +1,7 @@
 <style>
 tr:nth-child(even) {background-color: #c2c2c2;}
  @media print{
-   table tr:nth-last-child(n+7) td {
+   table tr:nth-last-child(n+5) td {
     border: 1px solid black !important;
     color: black !important;
     text-align: center;
@@ -95,7 +95,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
                              <span class="text-sm text-grey-m2 align-middle">CTO Type:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['concent_type'] }}</span>
+                            <span class="text-600 text-110 text-blue align-middle" >{{ ucfirst($header['concent_type']) }}</span>
                         
                         </div>
                     </div>

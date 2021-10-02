@@ -24,7 +24,7 @@ border-spacing: 0px;
     color: black !important;
    }
    .text-default-d3 {
-    font-size: 32px !important;
+    font-size: 16px !important;
    }
    .text-default-d3-24 {
     font-size: 18px !important;
@@ -45,7 +45,7 @@ border-spacing: 0px;
 			<td style="text-align: center;"><img style="vertical-align: middle;margin-top: 28px;" src="https://ppcb.punjab.gov.in/sites/default/files/logo_0.png">&nbsp;&nbsp;<span class="text-default-d3 company_text">Punjab Pollution Control Board</span></td>
 		</tr>
 		<tr>
-			<td style="text-align: center;" class="text-default-d3">{{ $header['industry_name'] }}</td>
+			<td style="text-align: center;font-size: 25px !important;" >{{ $header['industry_name'] }}</td>
 		</tr>
 		<tr>
 			<td style="text-align: center;" class="text-default-d3">FRESH CTO</td>
@@ -60,7 +60,7 @@ border-spacing: 0px;
 			<td style="text-align: center;" class="text-default-d3-24">CTO Duration:<b>{{ $header['duration'] }}</b></td>
 		</tr>
 				<tr>
-			<td style="text-align: center;" class="text-default-d3-24">CTO Type:<b>{{ $header['concent_type'] }}</b></td>
+			<td style="text-align: center;" class="text-default-d3-24">CTO Type:<b>{{ ucfirst($header['concent_type']) }}</b></td>
 		</tr>
 		<tr>
 			<td style="text-align: center;" class="text-default-d3-24">Date Of CTO Applied:<b>{{ $header['view_apply_on'] }}</b></td>

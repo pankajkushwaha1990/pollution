@@ -103,8 +103,18 @@
                                                 </i>Generated Regulation List
                                             </a>
                                         </li>
+
+                                         <li>
+                                            <a href="{{ route('reverse_calculation') }}">
+                                                <i class="metismenu-icon pe-7s-graph1">
+                                                </i>Reverse Calculation
+                                            </a>
+                                        </li>
+
                                     </ul>
                                 </li>
+
+
 
 
                                 <!--  <li class="mm-active">

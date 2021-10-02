@@ -127,7 +127,7 @@
                                                            <td>{{ ucfirst($report->duration) }}</td>
                                                            <td>{{ $report->valid_upto }}
                                                            </td>
-                                                           <td> <a href="{{ route('renew_cto_pdf',['id'=>$report->id]) }}"><button class="btn btn-info btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i></button></a>&nbsp;&nbsp;<a href="{{ route('fresh_cte_pdf',['id'=>$report->id,'pdf'=>'true']) }}"><button class="btn btn-danger btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-pdf-o"></i></button></a>&nbsp;&nbsp;<a href="{{ route('export_fresh_cte',['id'=>$report->id]) }}"><button class="btn btn-success btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-excel-o"></i></button></a></td>
+                                                           <td> <a href="{{ route('renew_cto_pdf',['id'=>$report->id]) }}"><button class="btn btn-info btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i></button></a>&nbsp;&nbsp;<a href="{{ route('renew_cto_pdf',['id'=>$report->id,'pdf'=>'true']) }}"><button class="btn btn-danger btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-pdf-o"></i></button></a>&nbsp;&nbsp;<a href="{{ route('export_renew_cto',['id'=>$report->id]) }}"><button class="btn btn-success btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-excel-o"></i></button></a></td>
                                                           
                                                          </tr>
                                                     @empty
@@ -144,7 +144,7 @@
                                                            <td>{{ ucfirst($report->duration) }}</td>
                                                            <td>{{ $report->valid_upto }}
                                                            </td>
-                                                           <td> <a href="{{ route('fresh_cto_pdf',['id'=>$report->id]) }}"><button class="btn btn-info btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i></button></a>&nbsp;&nbsp;<a href="{{ route('fresh_cto_pdf',['id'=>$report->id,'pdf'=>'true']) }}"><button class="btn btn-danger btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-pdf-o"></i></button></a>&nbsp;&nbsp;<a href="{{ route('export_fresh_extension',['id'=>$report->id]) }}"><button class="btn btn-success btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-excel-o"></i></button></a></td>
+                                                           <td> <a href="{{ route('fresh_cto_pdf',['id'=>$report->id]) }}"><button class="btn btn-info btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use eye"></i></button></a>&nbsp;&nbsp;<a href="{{ route('fresh_cto_pdf',['id'=>$report->id,'pdf'=>'true']) }}"><button class="btn btn-danger btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-pdf-o"></i></button></a>&nbsp;&nbsp;<a href="{{ route('export_fresh_cto_extension',['id'=>$report->id]) }}"><button class="btn btn-success btn-xs"><i class="fa fa-fw" aria-hidden="true" title="Copy to use file-excel-o"></i></button></a></td>
                                                           
                                                          </tr>
                                                     @empty

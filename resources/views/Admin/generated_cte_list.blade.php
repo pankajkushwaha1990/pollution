@@ -80,7 +80,7 @@
                                                             <h6 tabindex="-1" class="dropdown-header">
                                                                 Action</h6>
                                                             <button type="button" tabindex="0" class="dropdown-item">
-                                                                <i class="dropdown-icon lnr-inbox"> </i><span><a href="{{ route('industry_add') }}">Add New</a></span>
+                                                                <i class="dropdown-icon lnr-inbox"> </i><span><a href="{{ route('fresh_cte_add') }}">Add New</a></span>
                                                             </button>
                                                           <!--   <button type="button" tabindex="0" class="dropdown-item"><i
                                                                     class="dropdown-icon lnr-file-empty"> </i><span>Settings</span>

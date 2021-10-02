@@ -1,6 +1,6 @@
  <div class="main-card mb-3 card">
     <div class="card-body">
-     <form method="GET" action="{{ url('admin/fresh-cto-fee-calculate') }}" id="myForm">
+     <form method="GET" action="{{ url('admin/reverse_calculation_cto_fee') }}" id="myForm">
         <div class="form-row">
             <div class="col-md-12">
                 <div class="position-relative form-group">
@@ -134,8 +134,22 @@
                                                             <div class="form-row">
                                                                 <div class="col-md-6">
                                                                     <div class="position-relative form-group">
-                                                                    <label for="exampleEmail11" class="">Duration</label>
-                                                                    <input name="duration" id="duration" placeholder="Enter Duration" type="number"
+                                                                    <label for="exampleEmail11" class="">Mode<span class=""></span> &nbsp; &nbsp;  &nbsp; 
+            <div id="radioBtn" class="btn-group">
+              <a class="btn btn-default btn-sm active  mode_type" format='amount'  style="background-color: #18b3ef;"  data-toggle="fun" data-title="Y">Amount</a>
+              <a class="btn btn-default btn-sm  mode_type" format='date' data-toggle="fun" data-title="X">Date</a>
+            </div> |
+
+            &nbsp; &nbsp;  &nbsp;&nbsp; &nbsp;  &nbsp; 
+            <div id="radioBtn" class="btn-group mode_div">
+              <a class="btn btn-default btn-sm active  mode_format" format='num' style="background-color: #18b3ef;"  data-toggle="fun" data-title="Y">Num</a>
+              <a class="btn btn-default btn-sm  mode_format" format='lac'  data-toggle="fun" data-title="X">Lac</a>
+              <a class="btn btn-default btn-sm notActive mode_format" format='cr' data-toggle="fun" data-title="N">CR</a>
+            </div>
+
+
+          </label>
+                                                                    <input name="duration" id="duration" placeholder="Enter Duration" type="text"
                                                                                                          class="form-control" required="">
                                                          @if($errors->has('duration'))
                                                         <span class="text text-danger">{{ $errors->first('duration') }}</span>
@@ -207,6 +221,7 @@
                                                     </div>
 <script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
 
 
@@ -219,15 +234,51 @@
 </script>
 
 <script type="text/javascript">
+  var format = $('.mode_type.active').attr('format');
+  $('.mode_type').click(function(){
+     
+      $('.mode_type').css('background-color','').removeClass('active');
+      $(this).css('background-color','#18b3ef').addClass('active');
+       var mode_type =  $('.mode_type.active').attr('format');
+      if(mode_type=='amount'){
+        $('#duration').attr('placeholder','Enter Amount').val('');
+        $('.mode_div').show();
+
+
+      }else{
+        $('#duration').attr('placeholder','Enter Last Date').val('');
+        $('.mode_div').hide();
+        $('#duration').datepicker({
+            uiLibrary: 'bootstrap',
+            format: 'dd/mm/yyyy'
+        });
+      }
+  })
+</script>
+
+
+<script type="text/javascript">
+  var format = $('.mode_format.active').attr('format');
+  $('.mode_format').click(function(){
+      $('.mode_format').css('background-color','').removeClass('active');
+      $(this).css('background-color','#18b3ef').addClass('active');
+  })
+</script>
+
+
+<script type="text/javascript">
   $('#myForm').on('submit', function(e) {
       e.preventDefault(); // prevent native submit
-      var format = $('.currency_format.active').attr('format');
+      var format         = $('.currency_format.active').attr('format');
+      var reverse_format = $('.mode_type.active').attr('format');
+      var mode_format = $('.mode_format.active').attr('format');
+
       
       $(this).ajaxSubmit({
           success: function(response) {
             $('#calculation_result_here').html(response);
          },
-         data: { action: 'calculate','format':format}
+         data: { action: 'calculate','format':format,'reverse_format':reverse_format,'mode_format':mode_format}
 
       })
   });

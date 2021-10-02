@@ -165,8 +165,8 @@ hr {
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                   <h5 class="card-title">CTO Calculation</h5>
+                                <div class="col-md-3">
+                                   <h5 class="card-title">Reverse CTO Calculation</h5>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="position-inline form-group">
@@ -180,6 +180,13 @@ hr {
                                       <div class="custom-radio custom-control">
                                        <input type="radio" id="exampleCustomRadio1" name="cto_type" value="renew"  class="custom-control-input cto_type">
                                      <label class="custom-control-label" for="exampleCustomRadio1">Renew CTO</label></div>
+                                     </div>
+                                </div>
+                                 <div class="col-md-3">
+                                    <div class="position-inline form-group">
+                                      <div class="custom-radio custom-control">
+                                       <input type="radio" id="exampleCustomRadio2" name="cto_type" value="regulation"  class="custom-control-input cto_type">
+                                     <label class="custom-control-label" for="exampleCustomRadio2">Regulation</label></div>
                                      </div>
                                 </div>
                             </div>
@@ -235,7 +242,7 @@ hr {
 </body>
 <script type="text/javascript">
     $(document).ready(function(){
-         $.ajax({url: "{{ url('admin/fresh-cto-add-page') }}", success: function(result){
+         $.ajax({url: "{{ url('admin/reverse_calculation_add_page') }}", success: function(result){
             $('#calculation_result_here').html('');
             $('#ajax_cte_add_page_here').html(result);
         }});
@@ -243,12 +250,17 @@ hr {
       $('.cto_type').click(function(){
             var cto_type = $(".cto_type:checked").val();
             if(cto_type=='renew'){
-               $.ajax({url: "{{ url('admin/extension-cto-add-page') }}", success: function(result){
+               $.ajax({url: "{{ url('admin/reverse_renew_calculation_add_page') }}", success: function(result){
+                     $('#calculation_result_here').html('');
+                     $('#ajax_cte_add_page_here').html(result);
+                }});
+            }else if(cto_type=='regulation'){
+               $.ajax({url: "{{ url('admin/reverse_regulation_calculation_add_page') }}", success: function(result){
                      $('#calculation_result_here').html('');
                      $('#ajax_cte_add_page_here').html(result);
                 }});
             }else{
-                $.ajax({url: "{{ url('admin/fresh-cto-add-page') }}", success: function(result){
+                $.ajax({url: "{{ url('admin/reverse_calculation_add_page') }}", success: function(result){
                      $('#calculation_result_here').html('');
                      $('#ajax_cte_add_page_here').html(result);
                 }});

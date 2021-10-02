@@ -85,12 +85,20 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+             <div class="col-md-6">
+               <div class="position-relative form-group">
+               <label for="exampleEmail11" class="">Apply On</label>
+               <input id="view_apply_on" name="view_apply_on" placeholder="Enter Applied Date" type="text" class="form-control" required="">
+               </div>
+            </div>
+
+
+          <!--   <div class="col-md-6">
                 <div class="position-relative form-group">
                 <label for="exampleEmail11" class="">Deposited Date</label>
                 <input id="deposited_date" name="deposited_date" placeholder="Enter Deposited Date" type="text"  class="form-control" required="">
                 </div>
-            </div>                                                                  
+            </div>      -->                                                             
         </div>
 
         <div class="form-row">
@@ -100,12 +108,7 @@
                 <input id="duration" name="duration" placeholder="Enter Duration" type="number" class="form-control" required="">
                 </div>
             </div>
-            <div class="col-md-6">
-               <div class="position-relative form-group">
-               <label for="exampleEmail11" class="">Apply On</label>
-               <input id="view_apply_on" name="view_apply_on" placeholder="Enter Applied Date" type="text" class="form-control" required="">
-               </div>
-            </div>
+           
         </div>
 
            <div class="form-row">
@@ -135,8 +138,8 @@
                                                             
     </div>
 </div>
-<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
