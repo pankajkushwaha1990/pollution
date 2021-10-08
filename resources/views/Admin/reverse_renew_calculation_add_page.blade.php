@@ -76,7 +76,7 @@
             <div class="col-md-6">
                 <div class="position-relative form-group">
                     <label for="exampleEmail11" class="">Deposited  Air Amount</label>
-                    <input name="deposited_air_amount" id="deposited_air_amount" placeholder="Enter Amount" type="text" class="form-control" required="">
+                    <input name="deposited_air_amount" id="deposited_air_amount" placeholder="Enter Amount" type="text" class="form-control" required="" value="0">
                     @if($errors->has('deposited_air_amount'))
                     <span class="text text-danger">{{ $errors->first('deposited_air_amount') }}</span>
                     @endif
@@ -85,7 +85,7 @@
             <div class="col-md-6">
                 <div class="position-relative form-group">
                 <label for="exampleEmail11" class="">Deposited  Water Amount</label>
-                <input name="deposited_water_amount" id="deposited_water_amount" placeholder="Enter Amount" type="text"  class="form-control" required="">
+                <input name="deposited_water_amount" id="deposited_water_amount" placeholder="Enter Amount" type="text"  class="form-control" required="" value="0">
                 @if($errors->has('deposited_water_amount'))
                 <span class="text text-danger">{{ $errors->first('deposited_water_amount') }}</span>
                 @endif
@@ -166,15 +166,15 @@
 
         <div class="form-row">
             <div class="col-md-8"></div>
-            <div class="col-md-2">
-                <div class="position-relative form-group">
-                 <button style="width: 100%;" type="button" value="enter_penalty" id="enter_penalty" name="enter_penalty" class="btn btn-success">Add CA Certificate</button>
-                </div>
-            </div>
 
              <div class="col-md-2">
                 <div class="position-relative form-group">
                  <button style="width: 100%;" type="submit" value="calculate" id="calculate" class="btn btn-success">Calculate</button>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="position-relative form-group">
+                 <button style="width: 100%;" type="button" value="enter_penalty" id="enter_penalty" name="enter_penalty" class="btn btn-success">Add CA Certificate</button>
                 </div>
             </div>
         </div>
@@ -192,6 +192,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+  function other_field_readonly_true(){
+        $('#deposited_air_amount').prop('readonly',true).val(0);
+        $('#deposited_water_amount').prop('readonly',true).val(0);
+
+        $('#penalty_air_amount').prop('readonly',true).val(0);
+        $('#penalty_water_amount').prop('readonly',true).val(0);
+  }
+
+  function other_field_readonly_false(){
+        $('#deposited_air_amount').prop('readonly',false);
+        $('#deposited_water_amount').prop('readonly',false);
+
+        $('#penalty_air_amount').prop('readonly',false);
+        $('#penalty_water_amount').prop('readonly',false);
+  }
+</script>
+
+<script type="text/javascript">
   var format = $('.currency_format.active').attr('format');
   $('.currency_format').click(function(){
       $('.currency_format').css('background-color','').removeClass('active');
@@ -201,6 +219,8 @@
 
 <script type="text/javascript">
   var format = $('.varied_calculation.active').attr('format');
+  other_field_readonly_true();
+
   $('.varied_calculation').click(function(){
       $('.varied_calculation').css('background-color','').removeClass('active');
       $(this).css('background-color','#18b3ef').addClass('active');
@@ -217,11 +237,13 @@
       if(mode_type=='amount'){
         $('#duration').attr('placeholder','Enter Amount').val('');
         $('.mode_div').show();
+        other_field_readonly_true();
 
 
       }else{
         $('#duration').attr('placeholder','Enter Last Date').val('');
         $('.mode_div').hide();
+        other_field_readonly_false();
         $('#duration').datepicker({
             uiLibrary: 'bootstrap',
             format: 'dd/mm/yyyy'
@@ -240,10 +262,16 @@
 <script type="text/javascript">
   $('#myForm').on('submit', function(e) {
       e.preventDefault(); // prevent native submit
+
+
+
       var format = $('.currency_format.active').attr('format');
       var varied = $('.varied_calculation.active').attr('format');
       var reverse_format = $('.mode_type.active').attr('format');
       var mode_format = $('.mode_format.active').attr('format');
+
+
+
       $(this).ajaxSubmit({
           success: function(response) {
             $('#calculation_result_here').html(response);

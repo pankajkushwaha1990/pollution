@@ -156,15 +156,15 @@
                 </div>
             </div>
  -->
-  <div class="col-md-2">
-                <div class="position-relative form-group">
-                 <button type="button" style="width: 100%;" value="add_ca_certificate" id="add_ca_certificate" class="btn btn-success">Add CA Certificate</button>
-                </div>
-            </div>
 
              <div class="col-md-2">
                 <div class="position-relative form-group">
                  <button type="submit" style="width: 100%;" value="calculate" id="calculate_2" class="btn btn-success">Calculate</button>
+                </div>
+            </div>
+  <div class="col-md-2">
+                <div class="position-relative form-group">
+                 <button type="button" style="width: 100%;" value="add_ca_certificate" id="add_ca_certificate" class="btn btn-success">Add CA Certificate</button>
                 </div>
             </div>
         </div>
@@ -258,12 +258,14 @@
   $('#myForm').on('submit', function(e) {
     e.preventDefault(); // prevent native submit
     var format = $('.currency_format.active').attr('format');
-    var reverse_format = $('.mode_type.active').attr('format');
+     var reverse_format = $('.mode_type.active').attr('format');
+      var mode_format = $('.mode_format.active').attr('format');
+
       $(this).ajaxSubmit({
           success: function(response) {
             $('#calculation_result_here').html(response);
          },
-         data: { action: 'calculate','format':format,'reverse_format':reverse_format}
+         data: { action: 'calculate','format':format,'reverse_format':reverse_format,'mode_format':mode_format}
 
       })
   });

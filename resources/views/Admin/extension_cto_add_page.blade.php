@@ -155,15 +155,15 @@
 
         <div class="form-row">
             <div class="col-md-8"></div>
-            <div class="col-md-2">
-                <div class="position-relative form-group">
-                 <button style="width: 100%;" type="button" value="enter_penalty" id="enter_penalty" name="enter_penalty" class="btn btn-success">Add CA Certificate</button>
-                </div>
-            </div>
 
              <div class="col-md-2">
                 <div class="position-relative form-group">
                  <button style="width: 100%;" type="submit" value="calculate" id="calculate" class="btn btn-success">Calculate</button>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="position-relative form-group">
+                 <button style="width: 100%;" type="button" value="enter_penalty" id="enter_penalty" name="enter_penalty" class="btn btn-success">Add CA Certificate</button>
                 </div>
             </div>
         </div>

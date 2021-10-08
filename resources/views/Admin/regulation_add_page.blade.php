@@ -307,15 +307,15 @@ hr {
                 </div>
             </div>
  -->
-  <div class="col-md-2">
-                <div class="position-relative form-group">
-                 <button type="button" style="width: 100%;" value="add_ca_certificate" id="add_ca_certificate" class="btn btn-success">Add CA Certificate</button>
-                </div>
-            </div>
 
              <div class="col-md-2">
                 <div class="position-relative form-group">
                  <button type="submit" style="width: 100%;" value="calculate" id="calculate_2" class="btn btn-success">Calculate</button>
+                </div>
+            </div>
+  <div class="col-md-2">
+                <div class="position-relative form-group">
+                 <button type="button" style="width: 100%;" value="add_ca_certificate" id="add_ca_certificate" class="btn btn-success">Add CA Certificate</button>
                 </div>
             </div>
         </div>

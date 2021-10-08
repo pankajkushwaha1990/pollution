@@ -217,9 +217,9 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 
                             
                         </tr> 
-                        <tr style="background-color: #c2c2c200;">
-                            <!-- <td></td> -->
-                            
+
+                        @if(empty($footer['exceed_enable']))
+                        <tr style="background-color: #c2c2c200;">                           
                             <td colspan="5" class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">Fee already deposited at the time of last grant of CTO (-)</b></td>
                             @if(isset($footer['ca_diffrence']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
@@ -243,37 +243,41 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                              <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['deposited_air_amount']) }}</b></td>
                              @endif
                         </tr> 
+                        @endif
 
                         
 
-
+                        @if(isset($footer['exceed_enable']) && !empty($footer['exceed_enable']))
                         <tr style="background-color: #c2c2c200;">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">Total</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">Excess Fee Deposited To The Board</b></td>
                             @if(isset($footer['ca_diffrence']))
                             <td class="text-secondary-d2" style="text-align: center;"></td>
                             @endif
                            
                              @if(isset($footer['noc_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['total_noc_fee']) }}</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;"></b></td>
                             @endif
                           
                             @if(isset($footer['water_regu_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['water_regu_fee']) }}</b></td>
                             @endif
-                            @if(isset($footer['final_cto_water_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_cto_water_fee']) }}</b></td>
+                            @if(isset($footer['final_cto_water_fee']) && !isset($footer['air_regu_fee']))
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['exceed_fee']) }}</b></td>
                             @endif
-                              @if(isset($footer['air_regu_fee']))
+                            @if(isset($footer['air_regu_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['air_regu_fee']) }}</b></td>
                             @endif
                             @if(isset($footer['final_cto_air_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_cto_air_fee']) }}</b></td>
+                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['exceed_fee']) }}</b></td>
                             @endif
                         </tr> 
+                        @endif
+
+
                         @if(isset($footer['total_water_penalty']))
                         <tr style="background-color: #c2c2c200;">
                             <td></td>
