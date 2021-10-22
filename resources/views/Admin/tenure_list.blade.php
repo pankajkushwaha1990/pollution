@@ -123,8 +123,8 @@
                                                            <td>
                                                             <div class="mb-2 mr-2 badge badge-success">
                                                                 <a style="color:white;" href="{{ route('tenure_fee_details',['id'=>$role->id]) }}">Fee</a>
-                                                            </div> |
-                                                            <div class="mb-2 mr-2 badge badge-info">Penality</div></td>
+                                                            </div> 
+                                                            <!-- <div class="mb-2 mr-2 badge badge-info">Penality</div></td> -->
                                                          </tr>
                                                     @empty
                                                        

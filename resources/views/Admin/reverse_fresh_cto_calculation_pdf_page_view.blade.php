@@ -88,7 +88,7 @@
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle text_bold">CTO Duration:</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">CTO Amount/Duration:</span>
                             <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['duration'] }}</span>
                         
                         </div>
@@ -159,7 +159,7 @@
                         </tr> 
                         @endforeach
 
-                        <tr style="background-color: #c2c2c200;" class="border_none">
+                       <tr style="background-color: #c2c2c200;" class="border_none">
                             <td ></td>
                             <td ></td>
                             <td ></td>
@@ -188,7 +188,7 @@
                         <tr style="background-color: #c2c2c200;" class="border_none">
                             <!-- <td></td> -->
                             
-                            <td colspan="5" class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">Fee already deposited at the time of last grant of CTO (-)</b></td>
+                            <td colspan="5" class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ $footer['dynamic_label']}}</b></td>
                             @if(isset($footer['total_noc_fee']))
                             <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">0</b></td>
                             @endif
@@ -210,29 +210,6 @@
                         
 
 
-                        <tr style="background-color: #c2c2c200;" class="border_none">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-95"></td>
-                            <td class="text-secondary-d2" style="text-align: center;" ><b style="font-size: 18px;">Total</b></td>
-                             @if(isset($footer['total_noc_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ $footer['total_noc_fee'] }}</b></td>
-                            @endif
-                            
-                             @if(isset($footer['arrear']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;"></b></td>
-                            @endif
-                            
-                            @if(isset($footer['final_cto_water_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_cto_water_fee']) }}</b></td>
-                            @endif
-
-                          
-                            @if(isset($footer['total_cto_air_fee']))
-                            <td class="text-secondary-d2" style="text-align: center;"><b style="font-size: 18px;">{{ money_format_change($footer['final_cto_air_fee']) }}</b></td>
-                            @endif
-                        </tr> 
                         @if(isset($footer['total_water_penalty']))
                         <tr style="background-color: #c2c2c200;" class="border_none">
                             <td></td>

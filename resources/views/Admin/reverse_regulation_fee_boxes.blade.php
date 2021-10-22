@@ -1,40 +1,4 @@
-<style>
-tr:nth-child(even) {background-color: #c2c2c2;}
- @media print{
-   table tr:nth-last-child(n+7) td {
-    border: 1px solid black !important;
-    color: black !important;
-    text-align: center;
-
-   }
-   table th {
-    border: 1px solid black !important;
-    color: black !important;
-    text-align: center;
-
-
-   }
-   table {
-    width: 100%;
-   }
-   .text-default-d3,.align-middle,.text-blue {
-    color: black !important;
-   }
-   .text-default-d3 {
-    font-size: 32px !important;
-   }
-   .text-default-d3.company_text {
-    font-weight: 600;
-   }
-   .print_show{
-    display: block;
-   }
-   
- }
-
-
-</style>
-<div class="page-content container" id="printarea">
+<div class="page-content container" id="printarea_first">
     <div class="container px-0">
         <div class="row mt-4">
             <div class="col-12 col-lg-12" >
@@ -52,14 +16,14 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-150">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                            <h4><span class="text-default-d3" >{{ $header['industry_name'] }}</span></h4>
+                            <h4><span class="text-default-d3 industry_name" >{{ $header['industry_name'] }}</span></h4>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                        <span class="text-sm text-grey-m2 align-middle">Industry Type & Duration:</span>
-                        <span class="text-600 text-110 text-blue align-middle">{{ $header['industry_type'] }} ({{ $header['tenure_from'].' to '.$header['tenure_to'] }})</span>
+                        <span class="text-sm text-grey-m2 align-middle text_bold">Industry Type & Duration:</span>
+                        <span class="text-600 text-110 text-blue align-middle text_bold_600">{{ $header['industry_type'] }} ({{ $header['tenure_from'].' to '.$header['tenure_to'] }})</span>
                         
                         </div>
                     </div>
@@ -67,8 +31,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Industry Category:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['industry_category'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Industry Category:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['industry_category'] }}</span>
                         
                         </div>
                     </div>
@@ -76,8 +40,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Industry Oprational Date:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['current_apply_date'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Industry Oprational Date:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['current_apply_date'] }}</span>
                         
                         </div>
                     </div>
@@ -86,16 +50,16 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">CTO Renewal Applied On:</span>
-                            <span class="text-600 text-110 text-blue align-middle">{{ $header['view_apply_on'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">CTO Renewal Applied On:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600">{{ $header['view_apply_on'] }}</span>
                         
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Duration For Renewal:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['duration'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Duration For Renewal:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['duration'] }}</span>
                         
                         </div>
                     </div>
@@ -103,8 +67,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Concent Type:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['concent_type'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Concent Type:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['concent_type'] }}</span>
                         
                         </div>
                     </div>
@@ -112,8 +76,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Penalty (Days):</span>
-                            <span class="text-600 text-110 text-blue align-middle">{{ $header['penalty_days'] }} ({{ $header['penalty_slab'] }})</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Penalty (Days):</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600">{{ $header['penalty_days'] }} ({{ $header['penalty_slab'] }})</span>
                         
                         </div>
                     </div>
@@ -179,7 +143,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             @endif
                         </tr> 
                         @endforeach
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             
                            
                             <td colspan="6" class="text-secondary-d2"  style="text-align: right;"><b style="font-size: 18px;">Fee Total</b></td>
@@ -205,7 +169,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 
                             
                         </tr> 
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             <!-- <td></td> -->
                             
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;"><b style="font-size: 18px;">{{ $footer['dynamic_label']}}</b></td>
@@ -233,7 +197,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         
 
 
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">Total</b></td>
                            
                            
@@ -255,7 +219,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             @endif
                         </tr> 
                         @if(isset($footer['total_water_penalty']) || isset($footer['total_air_penalty']))
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                            
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">CTO Penalty</b></td>
                            
@@ -281,7 +245,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         @endif
 
                         @if(isset($footer['penalty_water_amount']) || isset($footer['total_air_penalty']))
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             <td colspan="6" class="text-secondary-d2"  style="text-align: right;"><b style="font-size: 18px;">Fee already deposited CTO penalty (-)</b></td>
                            
                              @if(isset($footer['noc_fee']))
@@ -310,7 +274,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 
                         
 
-                         <tr style="background-color: #c2c2c200;">
+                         <tr style="background-color: #c2c2c200;" class="border_none">
                             
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">Total Payable Amount</b></td>
                            
@@ -363,28 +327,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
         </div>
         <div class="row">
                 <div class="col-md-8"></div>
-                <div class="col-md-2"><button style="width: 100%;" id="print_button" class="btn btn-success">Print</button></div>
-                <div class="col-md-2"><button style="width: 100%;" id="save_cte" class="btn btn-success">Save</button></div>
+                <div class="col-md-2"><button style="width: 100%;" id="print_button_first" class="btn btn-success">Print</button></div>
+                <div class="col-md-2"><button style="width: 100%;" id="save_cte_eight" class="btn btn-success">Save</button></div>
         </div>
     </div>
 </div>
-<script type="text/JavaScript" src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.print/1.6.0/jQuery.print.js"></script>
-<script type="text/javascript">
-    $("#print_button").click(function () {
-        $("#printarea").print();
-    });
-</script>
-<script type="text/javascript">
-  $('#save_cte').click(function(e){
-      e.preventDefault(); // prevent native submit
-      var format = $('.currency_format.active').attr('format');
-        $('#myForm').ajaxSubmit({
-          success: function(response) {
-            $('#calculation_result_here').html(response);
-         },
-         data: { action: 'save','format':format}
-
-      })
-  });
-</script>
-

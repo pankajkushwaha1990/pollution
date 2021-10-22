@@ -1,188 +1,4 @@
-<!doctype html>
-<html lang="en">
-
-
-<!-- Mirrored from demo.dashboardpack.com/kero-html-sidebar-pro/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 13 May 2021 14:51:32 GMT -->
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Language" content="en">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Analytics - This is an example dashboard created using build-in elements and components.</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
-    />
-    <meta name="description" content="This is an example dashboard created using build-in elements and components.">
-    <link rel="icon" href="favicon.ico">
-
-    <!-- Disable tap highlight on IE -->
-    <meta name="msapplication-tap-highlight" content="no">
-
-<link href="{{ asset('/template/main.07a59de7b920cd76b874.css') }}" rel="stylesheet">
-<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-
-<style type="text/css">
-    .text-secondary-d1 {
-    color: #728299!important;
-}
-.page-header {
-    margin: 0 0 1rem;
-    padding-bottom: 1rem;
-    padding-top: .5rem;
-    border-bottom: 1px dotted #e2e2e2;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -ms-flex-align: center;
-    align-items: center;
-}
-.page-title {
-    padding: 0;
-    margin: 0;
-    font-size: 1.75rem;
-    font-weight: 300;
-}
-.brc-default-l1 {
-    border-color: #dce9f0!important;
-}
-
-.ml-n1, .mx-n1 {
-    margin-left: -.25rem!important;
-}
-.mr-n1, .mx-n1 {
-    margin-right: -.25rem!important;
-}
-.mb-4, .my-4 {
-    margin-bottom: 1.5rem!important;
-}
-
-hr {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    border: 0;
-    border-top: 1px solid rgba(0,0,0,.1);
-}
-
-.text-grey-m2 {
-    color: #888a8d!important;
-}
-
-.text-success-m2 {
-    color: #86bd68!important;
-}
-
-.font-bolder, .text-600 {
-    font-weight: 600!important;
-}
-
-.text-110 {
-    font-size: 110%!important;
-}
-.text-blue {
-    color: #478fcc!important;
-}
-.pb-25, .py-25 {
-    padding-bottom: .75rem!important;
-}
-
-.pt-25, .py-25 {
-    padding-top: .75rem!important;
-}
-.bgc-default-tp1 {
-    background-color: rgba(121,169,197,.92)!important;
-}
-.bgc-default-l4, .bgc-h-default-l4:hover {
-    background-color: #f3f8fa!important;
-}
-.page-header .page-tools {
-    -ms-flex-item-align: end;
-    align-self: flex-end;
-}
-
-.btn-light {
-    color: #757984;
-    background-color: #f5f6f9;
-    border-color: #dddfe4;
-}
-.w-2 {
-    width: 1rem;
-}
-
-.text-120 {
-    font-size: 120%!important;
-}
-.text-primary-m1 {
-    color: #4087d4!important;
-}
-
-.text-danger-m1 {
-    color: #dd4949!important;
-}
-.text-blue-m2 {
-    color: #68a3d5!important;
-}
-.text-150 {
-    font-size: 150%!important;
-}
-.text-60 {
-    font-size: 60%!important;
-}
-.text-grey-m1 {
-    color: #7b7d81!important;
-}
-.align-bottom {
-    vertical-align: bottom!important;
-}
-</style>
- <style>
-tr:nth-child(even) {background-color: #c2c2c2;}
- @media  print{
-   table tr:nth-last-child(n+7) td {
-    border: 1px solid black !important;
-    color: black !important;
-    text-align: center !important;
-
-   }
-   table th {
-    border: 1px solid black !important;
-    color: black !important;
-    text-align: center !important;
-
-
-
-   }
-   table {
-    width: 100%;
-   }
-   .text-default-d3,.align-middle,.text-blue {
-    color: black !important;
-    text-align: center !important;
-
-   }
-   .text-default-d3 {
-    font-size: 32px !important;
-    text-align: center !important;
-
-   }
-   .text-default-d3.company_text {
-    font-weight: 600;
-    text-align: center !important;
-
-   }
-   .print_show{
-    display: block;
-   }
-   
- }
-
-
-</style>
-</head>
+@include('Admin.main_header')
 
 <body>
 <div class="app-container app-theme-gray">
@@ -226,7 +42,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 <div class="page-content container" >
     <div class="container px-0">
         <div class="row mt-4">
-            <div class="col-12 col-lg-12" id="printarea">
+            <div class="col-12 col-lg-12" id="printarea_first">
                 <div class="row">
                     <div class="col-12 print_show" >
                         <div class="text-center text-150">
@@ -241,14 +57,14 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-150">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                            <h4><span class="text-default-d3" >{{ $header['industry_name'] }}</span></h4>
+                            <h4><span class="text-default-d3 industry_name" >{{ $header['industry_name'] }}</span></h4>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                        <span class="text-sm text-grey-m2 align-middle">Industry Type & Duration:</span>
-                        <span class="text-600 text-110 text-blue align-middle">{{ $header['industry_type'] }} ({{ $header['tenure_from'].' to '.$header['tenure_to'] }})</span>
+                        <span class="text-sm text-grey-m2 align-middle text_bold">Industry Type & Duration:</span>
+                        <span class="text-600 text-110 text-blue align-middle text_bold_600">{{ $header['industry_type'] }} ({{ $header['tenure_from'].' to '.$header['tenure_to'] }})</span>
                         
                         </div>
                     </div>
@@ -256,8 +72,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Industry Category:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['industry_category'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Industry Category:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['industry_category'] }}</span>
                         
                         </div>
                     </div>
@@ -265,8 +81,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Industry Oprational Date:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['current_apply_date'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Industry Oprational Date:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['current_apply_date'] }}</span>
                         
                         </div>
                     </div>
@@ -275,16 +91,16 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">CTO Renewal Applied On:</span>
-                            <span class="text-600 text-110 text-blue align-middle">{{ $header['view_apply_on'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">CTO Renewal Applied On:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600">{{ $header['view_apply_on'] }}</span>
                         
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Duration For Renewal:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['duration'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Duration For Renewal:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['duration'] }}</span>
                         
                         </div>
                     </div>
@@ -292,8 +108,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Concent Type:</span>
-                            <span class="text-600 text-110 text-blue align-middle" >{{ $header['concent_type'] }}</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Concent Type:</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600" >{{ $header['concent_type'] }}</span>
                         
                         </div>
                     </div>
@@ -301,8 +117,8 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                     <div class="col-12">
                         <div class="text-center text-100">
                             <!-- <i class="text-success-m2 mr-1"></i> -->
-                             <span class="text-sm text-grey-m2 align-middle">Penalty (Days):</span>
-                            <span class="text-600 text-110 text-blue align-middle">{{ $header['penalty_days'] }} ({{ $header['penalty_slab'] }})</span>
+                             <span class="text-sm text-grey-m2 align-middle text_bold">Penalty (Days):</span>
+                            <span class="text-600 text-110 text-blue align-middle text_bold_600">{{ $header['penalty_days'] }} ({{ $header['penalty_slab'] }})</span>
                         
                         </div>
                     </div>
@@ -362,7 +178,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             @endif
                         </tr> 
                         @endforeach
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             
                            
                             <td colspan="6" class="text-secondary-d2"  style="text-align: right;"><b style="font-size: 18px;">Fee Total</b></td>
@@ -388,7 +204,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 
                             
                         </tr> 
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             <!-- <td></td> -->
                             
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;"><b style="font-size: 18px;">Fee already deposited at the time of last grant of CTO (-)</b></td>
@@ -416,7 +232,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         
 
 
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">Total</b></td>
                            
                            
@@ -438,7 +254,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                             @endif
                         </tr> 
                         @if(isset($footer['total_water_penalty']) || isset($footer['total_air_penalty']))
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                            
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">CTO Penalty</b></td>
                            
@@ -464,7 +280,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
                         @endif
 
                         @if(isset($footer['penalty_water_amount']) || isset($footer['total_air_penalty']))
-                        <tr style="background-color: #c2c2c200;">
+                        <tr style="background-color: #c2c2c200;" class="border_none">
                             <td colspan="6" class="text-secondary-d2"  style="text-align: right;"><b style="font-size: 18px;">Fee already deposited CTO penalty (-)</b></td>
                            
                              @if(isset($footer['noc_fee']))
@@ -493,7 +309,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 
                         
 
-                         <tr style="background-color: #c2c2c200;">
+                         <tr style="background-color: #c2c2c200;" class="border_none">
                             
                             <td colspan="6" class="text-secondary-d2" style="text-align: right;" ><b style="font-size: 18px;">Total Payable Amount</b></td>
                            
@@ -544,7 +360,7 @@ tr:nth-child(even) {background-color: #c2c2c2;}
         </div>
         <div class="row">
                 <div class="col-md-6"></div>
-                <div class="col-md-2"><button style="width: 100%;" id="print_button" class="btn btn-success">Print</button></div>
+                <div class="col-md-2"><button style="width: 100%;" id="print_button_first" class="btn btn-success">Print</button></div>
                 <div class="col-md-2"><a href="{{ route('export_fresh_regulation',['id'=>$id]) }}"><button style="width: 100%;" id="save_cte" class="btn btn-success">Excel</button></a></div>
                 <div class="col-md-2"><a href="{{ route('regulation_pdf',['id'=>$id,'pdf'=>'true']) }}"><button style="width: 100%;" id="save_cte" class="btn btn-warning">PDF</button></a></div>
         </div>
@@ -576,19 +392,5 @@ tr:nth-child(even) {background-color: #c2c2c2;}
 </div>
 
 <div class="app-drawer-overlay d-none animated fadeIn"></div>
-<script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script>
-</body>
-
-<script type="text/JavaScript" src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.print/1.6.0/jQuery.print.js"></script>
-<script type="text/javascript">
-    $("#print_button").click(function () {
-        $("#printarea").print();
-    });
-</script>
-
-
-
-
-
-<!-- Mirrored from demo.dashboardpack.com/kero-html-sidebar-pro/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 13 May 2021 14:52:38 GMT -->
+@include('Admin.all_js')
 </html>

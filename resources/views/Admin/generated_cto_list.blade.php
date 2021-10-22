@@ -122,7 +122,7 @@
                                                            <td>{{ ucfirst($report->industry_name) }}</td>
                                                            <td>{{ ucfirst($report->fee_type) }}</td>
                                                            <td>{{ $report->applied_on_view }}</td>
-                                                           <td>{{ money_format_change($report->total_cto_air_fee) }}</td>
+                                                           <td>{{ money_format_change($report->payable_amount) }}</td>
                                                            <td>{{ money_format_change($report->new_ca_convert) }}</td>
                                                            <td>{{ ucfirst($report->duration) }}</td>
                                                            <td>{{ $report->valid_upto }}

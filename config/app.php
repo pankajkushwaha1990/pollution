@@ -25,7 +25,7 @@ function money_format_change($num){
 
 return [
     'project_name' => 'Pollution',
-    'project_logo' => 'https://icon-library.com/images/air-quality-icon/air-quality-icon-16.jpg',
+    'project_logo' => '/template/assets/images/logo_0.png',
     'module_name' => ['role_management'=>'Role Management','company_finance'=>'Company Finance'],
     'module_country' => ['india'=>'India','china'=>'China'],
     'module_partner' => ['owner'=>'Owner','partner_ship'=>'Partnership'],

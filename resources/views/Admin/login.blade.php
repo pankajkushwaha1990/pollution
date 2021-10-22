@@ -14,7 +14,6 @@
     <meta name="msapplication-tap-highlight" content="no">
 
 <link href="{{ asset('/template/main.07a59de7b920cd76b874.css') }}"  rel="stylesheet">
-<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <style type="text/css">
@@ -38,7 +37,7 @@
                                     <div class="modal-body">
                                         <div class="h5 modal-title text-center">
                                             <h4 class="mt-2">
-                                                <div ><img src="{{ config('app.project_logo')  }}"></div>
+                                                <div ><img src="{{ asset('/template/assets/images') }}/logo_0.png">&nbsp;&nbsp;<span class="text-default-d3 company_text" >Punjab Pollution Control Board</span></div>
                                                 <!-- <span>Please sign in to your account below.</span> -->
                                             </h4>
                                         </div>
@@ -102,21 +101,4 @@
             </div>
     </div>
 <script type="text/javascript" src="{{ asset('/template/assets/scripts/main.07a59de7b920cd76b874.js') }}"></script></body>
-<script type="text/javascript">
-    var onRecaptchaExpired = function () {
-       $('.submit_button').hide();
-    };
-
-    var onloadCallback = function() {
-        grecaptcha.render('example3', {
-          'sitekey' : '6LdR7BUUAAAAALfxmL2omdt580ZXsUnlSLR2QTIP',
-          'expired-callback': onRecaptchaExpired,
-          'callback' : function(){
-            $('.submit_button').show();
-          },
-        });
-      };
-
-
-    </script>
 </html>

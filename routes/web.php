@@ -27,6 +27,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 	Route::get('/industry-add',[AdminController::class,  'industry_add'])->name('industry_add');
 	Route::get('/tenure-list',[AdminController::class,  'tenure_list'])->name('tenure_list');
 	Route::post('/industry-add-submit',[AdminController::class,  'industry_add_submit'])->name('industry_add_submit');
+
+	
+	Route::post('/add_industry_ajax',[AdminController::class,  'add_industry_ajax'])->name('add_industry_ajax');
+
+
+
+
 	Route::get('/industry-edit/{id}',[AdminController::class,  'industry_edit'])->name('industry_edit');
 	Route::post('/industry-edit-submit',[AdminController::class,  'industry_edit_submit'])->name('industry_edit_submit');
 	Route::get('/tenure-fee-details/{id}',[AdminController::class,  'tenure_fee_details'])->name('tenure_fee_details');

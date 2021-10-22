@@ -456,8 +456,13 @@ class AdminController extends Controller{
 
   //dashboard
   public function dashboard(){
+     $red = Industry::whereIn('industry_category',['1','5'])->count(); 
+     $orange = Industry::whereIn('industry_category',['3'])->count(); 
+     $green = Industry::whereIn('industry_category',['4'])->count(); 
 
-     return view('Admin.dashboard');
+      $roles = Tenure::all();
+
+     return view('Admin.dashboard',compact('red','orange','green','roles'));
   }
 
   //change password
@@ -605,6 +610,7 @@ class AdminController extends Controller{
    $total_noc_fee       = 0;
    $penalty_ca_old      = 0;
    $air_regu_fee        = 0;
+   $old_ca_amount       = 0;
    $penalty_old_data    = $this->regulation_ca_exist_air_old_calculation($request);
     if(!empty($penalty_old_data)){
       foreach ($penalty_old_data as $key => $old_data) {
@@ -624,13 +630,16 @@ class AdminController extends Controller{
         // $air_regu_fee        += $old_data['air_regu_fee'];
         $to_date     =  $old_data['to_date'];      
         $f_date     =  $old_data['from_date'];      
+       $old_ca_amount  = $old_data['ca_certificate_amount'];
+
       }
     }
 
-
+// 4890000 40360000
 
     $last_vl = $request->penalty_ca;
     $last_penalty = end($last_vl);
+    $old_ca_amount  = $old_ca_amount;
     $applied_date          = $this->add_1_day_y_m_d($to_date);
     $current_applied_date  = $this->date_y_m_d($to_date);
     $end_date              = $this->date_d_m_y($this->add_year($current_applied_date,0));
@@ -669,9 +678,14 @@ class AdminController extends Controller{
       $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
       $days              =   $this->number_of_days($from_date,$to_date);
       $fees              =   $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
-      $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
-      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
-      if($ca_diff<=0){ $ca_diff = 0; }
+      // $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
+      $ca_diff           =   $penalty_ca-$old_ca_amount;
+      // if($ca_diff<=0){ $ca_diff = 0; }
+      // echo "<br>=====";
+      // echo $old_ca_amount;
+      // echo $penalty_ca;
+
+      
       $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
 
       $total_cto_air_fee  += $this->fee_by_days($fees,$days);
@@ -690,7 +704,7 @@ class AdminController extends Controller{
                                     // 'air_regu_fee'=>$noc_fee,
                                     'cto_air_fee'=>$this->fee_by_days($fees,$days),
                              ];
-      $penalty_ca_old     = $penalty_ca;
+      $old_ca_amount     = $penalty_ca;
       $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
       // $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
       // $total_cto_air_fee  += $this->fee_by_days($fees,$days);
@@ -764,12 +778,14 @@ class AdminController extends Controller{
       if($request->reverse_format=='amount'){
       $dynamic_label = "Excess Fee Deposited To The Board";
       $request->deposited_air_amount = ($request->duration-$payable_amount);
+    $payable_amount = $request->duration;
+
     }
 
     if($request->reverse_format=='date'){
       $dynamic_label = "Fee already deposited (-)";
     }
-        
+
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
             'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist',
@@ -792,7 +808,7 @@ class AdminController extends Controller{
    // $category      = Category::find($request->industry_category_id);
    $penalty_ca_old    = 0;
    $run               = 1;
-   $to_date           = null;
+   // $to_date           = null;
    for ($i=0; $i < $run; $i++) {
    $to_date               = $this->tenure_end_date($applied_date,$tenure_to,$to_date);
     if(strtotime($to_date)<=strtotime($end_date)){
@@ -825,7 +841,7 @@ class AdminController extends Controller{
                              ];
       $penalty_ca_old     = $penalty_ca;
       $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
-      // $to_date            = $this->tenure_end_date($applied_date,$tenure_to);       
+      $to_date            = $to_date;       
     }      
    }
    return $table_rows;
@@ -979,6 +995,8 @@ class AdminController extends Controller{
         // $air_regu_fee        += $old_data['air_regu_fee'];
         // $to_date     =  $old_data['to_date'];      
         $f_date     =  $old_data['from_date'];
+        $last_ca_amount = $old_data['ca_certificate_amount'];
+        // $f_date     =  $old_data['from_date'];
 
          }
         }
@@ -1031,7 +1049,7 @@ class AdminController extends Controller{
       $days              =   $this->number_of_days($from_date,$to_date);
       $fees              =   $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
       $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
-      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      $ca_diff           =   $penalty_ca-$last_ca_amount;
       if($ca_diff<=0){ $ca_diff = 0; }
       $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
 
@@ -1051,7 +1069,7 @@ class AdminController extends Controller{
                                     // 'air_regu_fee'=>$noc_fee,
                                     'cto_water_fee'=>$this->fee_by_days($fees,$days),
                              ];
-      $penalty_ca_old     = $penalty_ca;
+      $last_ca_amount     = $penalty_ca;
       $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
       // $to_date            = $this->tenure_end_date($applied_date,$tenure_to);
       // $total_cto_air_fee  += $this->fee_by_days($fees,$days);
@@ -1072,7 +1090,7 @@ class AdminController extends Controller{
                                     // 'air_regu_fee'=>$noc_fee,
                                     'cto_water_fee'=>$this->fee_by_days($fees,$days),
                              ];
-      $penalty_ca_old     = $penalty_ca;
+      $last_ca_amount     = $penalty_ca;
       $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
     
    }
@@ -1364,7 +1382,8 @@ class AdminController extends Controller{
             // $water_regu_fee        += $old_data['water_regu_fee'];       
             // $air_regu_fee        += $old_data['air_regu_fee'];
             $to_date = $old_data['to_date']; 
-            $f_date     =  $old_data['from_date'];      
+            $f_date     =  $old_data['from_date'];   
+            $last_ca_amount = $old_data['ca_certificate_amount'];   
          }
         }
          $last_vl = $request->penalty_ca;
@@ -1415,7 +1434,7 @@ class AdminController extends Controller{
       $days              =   $this->number_of_days($from_date,$to_date);
       $fees              =   $this->find_fee_category_applied_ca($request->industry_category_id,$applied_date,$penalty_ca);
       $penalty_ca        =   $this->penalty_ca_by_year($from_date,$request->penalty_ca,$request->format);
-      $ca_diff           =   ($i==0)?0:$penalty_ca-$penalty_ca_old;
+      $ca_diff           =   $penalty_ca-$last_ca_amount;
       if($ca_diff<=0){ $ca_diff = 0; }
       $noc_fee           =   $this->find_fee_category_applied_ca($request->industry_category_id,$from_date,$ca_diff);
 
@@ -1438,7 +1457,7 @@ class AdminController extends Controller{
                                     'cto_water_fee'=>$this->fee_by_days($fees,$days),
                                     'cto_air_fee'=>$this->fee_by_days($fees,$days),
                              ];
-         $penalty_ca_old     = $penalty_ca;
+         $last_ca_amount     = $penalty_ca;
          $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
         }elseif($request->reverse_format=='date' && strtotime($to_date)<=strtotime($this->date_y_m_d($request->duration))){
 
@@ -1456,7 +1475,7 @@ class AdminController extends Controller{
                                     'cto_water_fee'=>$this->fee_by_days($fees,$days),
                                     'cto_air_fee'=>$this->fee_by_days($fees,$days),
                              ];
-         $penalty_ca_old     = $penalty_ca;
+         $last_ca_amount     = $penalty_ca;
          $applied_date       = $this->add_1_day_y_m_d($this->date_d_m_y($to_date));
     
    }
@@ -1550,6 +1569,44 @@ class AdminController extends Controller{
         'industry_id'=>$report['industry_id'],
         'industry_category_id'=>$report['industry_category_id'],
         'fee_type'=>'regulation',
+        'applied_on'=>$report['applied_date'],
+        'valid_upto'=>$report['valid_upto'],
+      
+        'total_noc_fee'=>$footer['total_noc_fee'],
+        'payable_amount'=>$footer['payable_amount'],
+        'current_ca'=>$report['ca_amount'],
+        'final_fee'=>$report['final_fee'],
+        'new_ca'=>$report['new_ca'],
+        'format'=>$request->format,
+      ];
+      DB::table('reports_regulation')->insert($insert);
+      echo  "<span class='text text-success'>Data Saved successfully</span>";
+  }
+
+  private function save_reverse_regulation_data($response,$request){
+      $report = $response['header'];
+      $footer = $response['footer'];
+      $insert = [
+        'industry_name'=>$report['industry_name'],
+        'industry_type'=>$report['industry_type'],
+        'tenure_from'=>$report['tenure_from'],
+        'tenure_to'=>$report['tenure_to'],
+        'industry_category'=>$report['industry_category'],
+        'current_apply_date'=>$report['current_apply_date'],
+        'view_apply_on'=>$report['view_apply_on'],
+        'duration'=>$report['duration'],
+        'concent_type'=>$report['concent_type'],
+        'penalty_days'=>$report['penalty_days'],
+        'penalty_slab'=>$report['penalty_slab'],
+        'table_head'=>json_encode($response['table_head']),
+        'table_rows'=>json_encode($response['table_rows']),
+        'header'=>json_encode($response['header']),
+        'footer'=>json_encode($response['footer']),
+        'current_apply_date_ymd'=>$this->date_y_m_d($report['current_apply_date']),
+        'view_apply_on_ymd'=>$this->date_y_m_d($report['view_apply_on']),
+        'industry_id'=>$report['industry_id'],
+        'industry_category_id'=>$report['industry_category_id'],
+        'fee_type'=>'regulation (Reverse)',
         'applied_on'=>$report['applied_date'],
         'valid_upto'=>$report['valid_upto'],
       
@@ -1664,7 +1721,7 @@ class AdminController extends Controller{
       if($response['status']=='success' && $action=='calculate'){
         return view('Admin.reverse_regulation_fee_boxes',$response);
       }if($response['status']=='success' && $action=='save'){
-        $this->save_regulation_data($response,$request);
+        $this->save_reverse_regulation_data($response,$request);
       }else{
         return "<span class='text text-danger'>".$response['message']."</span>";
       }
@@ -2441,7 +2498,10 @@ class AdminController extends Controller{
     $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
             'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_air_fee'=>$final_cto_air_fee,
-            'payable_amount'=>$payable_amount
+            // 'payable_amount'=>$payable_amount
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
 
         ];
     $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Air Fee'];
@@ -2572,7 +2632,10 @@ class AdminController extends Controller{
    $footer    = [
             'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'final_cto_water_fee'=>$final_cto_water_fee,'total_cto_water_fee'=>$total_cto_water_fee,
-            'payable_amount'=>$payable_amount
+            // 'payable_amount'=>$payable_amount
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
           ];
    $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Water Fee'];
    $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
@@ -2714,7 +2777,11 @@ class AdminController extends Controller{
    $footer    = [
               'deposited_air_amount'=>$request->deposited_air_amount,'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
               'total_cto_water_fee'=>$total_cto_water_fee,'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_water_fee'=>$final_cto_water_fee,
-              'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount
+              'final_cto_air_fee'=>$final_cto_air_fee,
+              // 'payable_amount'=>$payable_amount
+              'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
             ];
     $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Water Fee','CTO Air Fee'];  
     
@@ -3152,7 +3219,7 @@ class AdminController extends Controller{
       if($response['status']=='success' && $action=='calculate'){
         return view('Admin.reverse_extension_cto_calculation_page',$response);
       }if($response['status']=='success' && $action=='save'){
-        $this->save_renew_cto_data($response,$request);
+        $this->save_reverse_renew_cto_data($response,$request);
       }else{
         return "<span class='text text-danger'>".$response['message']."</span>";
       }
@@ -4455,10 +4522,13 @@ private function fresh_cto_ca_change_water_calculation_reverse($request){
             'deposited_air_amount'=>$request->deposited_water_amount,
             'total_cto_air_fee'=>$total_cto_air_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
             'dynamic_label'=>$dynamic_label,
             
             'arrear'=>'exists',
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','Arrear','CTO Water Fee'];
 
@@ -4693,10 +4763,13 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
             'total_cto_water_fee'=>$total_cto_water_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,
             'final_cto_water_fee'=>$final_cto_water_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
             'dynamic_label'=>'',
             
             'arrear'=>'exists',
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','Arrear','CTO Water Fee','CTO Air Fee'];
 
@@ -4812,7 +4885,7 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
        if($response['status']=='success' && $action=='calculate'){
         return view('Admin.reverse_cto_calculation_page',$response);
       }if($response['status']=='success' && $action=='save'){
-        $this->save_fresh_cto_data($response);
+        $this->reverse_save_fresh_cto_data($response);
       }else{
         return "<span class='text text-danger'>".$response['message']."</span>";
       }   
@@ -4950,6 +5023,40 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
       echo  "<span class='text text-success'>Data Saved successfully</span>";
   }
 
+ private function reverse_save_fresh_cto_data($response){
+      $report     = $response['header'];
+      $table_rows = end($response['table_rows']);
+      // dd($table_rows);
+      $insert = [
+        'industry_id'=>$report['industry_id'],
+        'industry_name'=>$report['industry_name'],
+        'previous_industry_category_id'=>request()->previous_industry_category_id,
+        'industry_category_id'=>$report['industry_category_id'],
+        'industry_noc'=>request()->industry_noc,
+        'previous_ca'=>request()->previous_ca,
+        'current_ca'=>request()->current_ca,
+        'applied_date_ymd'=>$report['applied_date'],
+        'applied_date'=>$report['applied_date'],
+        'deposited_air_amount'=>request()->deposited_air_amount,
+        'deposited_water_amount'=>request()->deposited_water_amount,
+        'duration'=>$report['duration'],
+        'concent_type'=>$report['concent_type'],
+        'industry_type'=>$report['industry_type'],
+        'fee_type'=>'Fresh Cto (Reverse)',
+        'total_cte_fee'=>$response['footer']['payable_amount'],
+        'format'=>request()->format,
+        'header'=>json_encode($response['header']),
+        'valid_upto'=>$table_rows['to_date'],
+        // 'deposited_date'=>$this->date_y_m_d($report['deposited_date']),
+        'table_head'=>json_encode($response['table_head']),
+        'table_rows'=>json_encode($response['table_rows']),
+        'footer'=>json_encode($response['footer'])
+      ];
+      // dd($insert);
+      DB::table('report_fresh_cto')->insert($insert);
+      echo  "<span class='text text-success'>Data Saved successfully</span>";
+  }
+
 
 
 
@@ -5037,6 +5144,43 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
             ];
             DB::table('industries')->insert($roles);
             return redirect('/admin/industries-list')->with(['error_message'=>'Industry created successfully']);
+        }
+  }
+
+
+  public function add_industry_ajax(Request $request){
+        $validator = Validator::make(request()->all(), [
+             'industry_name'         => 'required',
+             'industry_category'     => 'required',
+             // 'industry_email'        => 'required',
+             // 'industry_mobile'       => 'required',
+             'industry_type'         => 'required',
+             'industry_scale'        => 'required',
+             // 'industry_latitude'     => 'required',
+             // 'industry_longitude'    => 'required',
+             // 'industry_address'      => 'required',
+        ]);
+        if ($validator->fails()){
+            $response = ['status'=>'failure','message'=>'industry_added','data'=>[],'report'=>[]];
+
+        }else{
+            $roles  = [
+              'industry_name'=>$request->industry_name,'industry_category'=>$request->industry_category,
+              'email'=>' ','mobile'=>' ',
+              'industry_type'=>$request->industry_type,'industry_scale'=>$request->industry_scale,
+              'latitude'=>'  ','longitude'=>' ',
+              'address'=>' ','status'=>1,'created_at'=>date('Y-m-d H:i:s'),
+            ];
+            $inserted_id = DB::table('industries')->insertGetId($roles);
+            if($inserted_id){
+              $response = ['status'=>'success','message'=>'industry_added','data'=>$inserted_id,'report'=>$request->industry_name];
+      
+            }else{
+            $response = ['status'=>'failure','message'=>'industry_added','data'=>[],'report'=>[]];
+
+            }
+             return response()->json($response);
+            // return redirect('/admin/industries-list')->with(['error_message'=>'Industry created successfully']);
         }
   }
 
@@ -5400,6 +5544,7 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
 
   public function renew_cto_pdf($fresh_cte_id,$pdf=null){
           $response = DB::table('report_cto')->where('id',$fresh_cte_id)->first();
+          $fee_type = $response->fee_type;
           $response  = [
             'header'=>json_decode($response->header,true),'table_head'=>json_decode($response->table_head,true),
            'table_rows'=>json_decode($response->table_rows,true),'footer'=>json_decode($response->footer,true),'id'=>$fresh_cte_id
@@ -5407,7 +5552,11 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
          if($pdf){
            set_time_limit(300);
            view()->share($response);
-           $pdf = PDF::loadView('Admin.renew_cto_calculation_pdf_page', $response);
+           if($fee_type=="Renew (Reverse)"){
+             $pdf = PDF::loadView('Admin.reverse_renew_cto_calculation_pdf_page', $response);
+           }else{
+             $pdf = PDF::loadView('Admin.renew_cto_calculation_pdf_page', $response);
+           }
            $pdf->getDomPDF()->setHttpContext(
                 stream_context_create([
                     'ssl' => [
@@ -5418,6 +5567,9 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
                 ])
             );
            return $pdf->download($response['header']['industry_name'].'_Fresh_CTE.pdf');
+         }
+         if($fee_type=="Renew (Reverse)"){
+          return view('Admin.reverse_renew_cto_calculation_pdf_page_view',$response);
          }      
          return view('Admin.renew_cto_calculation_pdf_page_view',$response);
   }
@@ -5448,6 +5600,8 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
 
   public function fresh_cto_pdf($fresh_cte_id,$pdf=null){
           $response = DB::table('report_fresh_cto')->where('id',$fresh_cte_id)->first();
+          $fee_type = $response->fee_type;
+
           $response  = [
             'header'=>json_decode($response->header,true),'table_head'=>json_decode($response->table_head,true),
            'table_rows'=>json_decode($response->table_rows,true),'footer'=>json_decode($response->footer,true),'id'=>$fresh_cte_id
@@ -5455,7 +5609,13 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
          if($pdf){
            set_time_limit(300);
            view()->share($response);
+            if($fee_type=='Fresh Cto (Reverse)'){
+           $pdf = PDF::loadView('Admin.reverse_fresh_cto_calculation_pdf_page', $response);
+           
+         }else{
            $pdf = PDF::loadView('Admin.fresh_cto_calculation_pdf_page', $response);
+
+         }
            $pdf->getDomPDF()->setHttpContext(
                 stream_context_create([
                     'ssl' => [
@@ -5466,6 +5626,9 @@ private function fresh_cto_ca_change_both_calculation_reverse($request){
                 ])
             );
            return $pdf->download($response['header']['industry_name'].'_Fresh_Extension.pdf');
+         }
+         if($fee_type=='Fresh Cto (Reverse)'){
+           return view('Admin.reverse_fresh_cto_calculation_pdf_page_view',$response);
          }      
          return view('Admin.fresh_cto_calculation_pdf_page_view',$response);
   }
@@ -6308,7 +6471,7 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
    $category      = Category::find($request->industry_category_id_new);
   
    $run               = 1;
-   $to_date           = null;die();
+   $to_date           = null;
 
 
 
@@ -6404,7 +6567,12 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
             'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist',
-            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee
+            'final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO Air Fee'];
         $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
@@ -6578,7 +6746,11 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
         $footer    = [
             'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'final_cto_water_fee'=>$final_cto_water_fee,'total_cto_water_fee'=>$total_cto_water_fee,
-            'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
             'ca_diffrence'=>'exist','noc_fee'=>'exist',
           ];
           $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO Water Fee'];
@@ -6762,7 +6934,12 @@ private function renew_varied_cto_no_change_air_calculation($from_date,$to_date,
          $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'total_cto_water_fee'=>$total_cto_water_fee,'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_water_fee'=>$final_cto_water_fee,
-            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'ca_diffrence'=>'exist','noc_fee'=>'exist',
+            'final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'ca_diffrence'=>'exist','noc_fee'=>'exist',
             'total_noc_fee'=>$total_noc_fee
           ];
           $table_head = [
@@ -6970,7 +7147,10 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
             ];
     $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
-            'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,
+            'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_air_fee'=>$final_cto_air_fee,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
             'penalty_days'=>'exist','total_air_penalty'=>$total_air_penalty,'penalty_air_amount'=>$request->penalty_air_amount
         ];
     $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Air Fee'];
@@ -7128,7 +7308,11 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
    $footer    = [
             'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'final_cto_water_fee'=>$final_cto_water_fee,'total_cto_water_fee'=>$total_cto_water_fee,
-            'payable_amount'=>$payable_amount,'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty,
             'penalty_water_amount'=>$request->penalty_water_amount
           ];
    $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Water Fee'];
@@ -7306,7 +7490,11 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
    $footer    = [
               'deposited_air_amount'=>$request->deposited_air_amount,'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
               'total_cto_water_fee'=>$total_cto_water_fee,'total_cto_air_fee'=>$total_cto_air_fee,'final_cto_water_fee'=>$final_cto_water_fee,
-              'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,
+              'final_cto_air_fee'=>$final_cto_air_fee,
+              // 'payable_amount'=>$payable_amount,
+              'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
               'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty,'total_air_penalty'=>$total_air_penalty,
               'penalty_air_amount'=>$request->penalty_air_amount,'penalty_water_amount'=>$request->penalty_water_amount
             ];
@@ -7661,7 +7849,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
-            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
             'penalty_days'=>'exist','total_air_penalty'=>$total_air_penalty,'penalty_air_amount'=>$request->penalty_air_amount
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO Air Fee'];
@@ -7784,7 +7977,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
-            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee
+            'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist','final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee
             
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO Air Fee'];
@@ -8134,7 +8332,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         $footer    = [
             'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'total_cto_water_fee'=>$total_cto_water_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist',
-            'final_cto_water_fee'=>$final_cto_water_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'final_cto_water_fee'=>$final_cto_water_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
             'penalty_water_amount'=>$request->penalty_water_amount,
             'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty
         ];
@@ -8259,7 +8462,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         $footer    = [
             'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'total_cto_water_fee'=>$total_cto_water_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist',
-            'final_cto_water_fee'=>$final_cto_water_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'final_cto_water_fee'=>$final_cto_water_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO Water Fee'];
         $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
@@ -8591,7 +8799,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,'deposited_water_amount'=>$request->deposited_water_amount,
             'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>$total_noc_fee,
-            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
             'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty,'total_air_penalty'=>$total_air_penalty,
             'total_cto_water_fee'=>$total_cto_water_fee,'final_cto_water_fee'=>$final_cto_water_fee,
             'penalty_air_amount'=>$request->penalty_air_amount,'penalty_water_amount'=>$request->penalty_water_amount
@@ -8724,7 +8937,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,'deposited_water_amount'=>$request->deposited_water_amount,
             'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>$total_noc_fee,
-            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
             'total_cto_water_fee'=>$total_cto_water_fee,'final_cto_water_fee'=>$final_cto_water_fee,
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO Water Fee','CTO Air Fee'];
@@ -8769,6 +8987,53 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         'final_cto_air_fee'=>$response['footer']['final_cto_air_fee'],
         'payable_amount'=>$response['footer']['payable_amount'],
         'total_cto_air_fee'=>$response['footer']['total_cto_air_fee'],
+        'table_head'=>json_encode($response['table_head']),
+        'table_rows'=>json_encode($response['table_rows']),
+        'footer'=>json_encode($response['footer']),
+        'header'=>json_encode($response['header']),
+      ];
+      DB::table('report_cto')->insert($insert);
+      echo  "<span class='text text-success'>Data Saved successfully</span>";
+  }
+
+  private function save_reverse_renew_cto_data($response,$request){
+
+      $report = $response['header'];
+      $table_rows = end($response['table_rows']);
+
+      $insert = [
+        'industry_id'=>$request['industry_id'],
+        'industry_name'=>$report['industry_name'],
+        'industry_category_id_old'=>$request['industry_category_id_old'],
+        'industry_category_old'=>$request['industry_category_old'],
+        'industry_category_id_new'=>$request['industry_category_id_new'],
+        'previous_ca_origional'=>$request['previous_ca'],
+        'previous_ca_convert'=>$this->change_currency($request['previous_ca'],$request['format']),
+        'format'=>$request['format'],
+        'new_ca_origional'=>$request['new_ca'],
+        'new_ca_convert'=>$this->change_currency($request['new_ca'],$request['format']),
+        'previous_apply_date'=>$request['previous_apply_date'],
+        'previous_apply_date_ymd'=>$this->date_y_m_d($request['previous_apply_date']),
+        'current_applied_date'=>$request['current_applied_date'],
+        'current_applied_date_ymd'=>$this->date_y_m_d($request['current_applied_date']),
+        'deposited_air_amount'=>$request['deposited_air_amount'],
+        'deposited_water_amount'=>$request['deposited_water_amount'],
+        'penalty_air_amount'=>$request['penalty_air_amount'],
+        'penalty_water_amount'=>$request['penalty_water_amount'],
+        'duration'=>$request['duration'],
+        'applied_on_view'=>$request['applied_on_view'],
+        'applied_on_view_ymd'=>$this->date_y_m_d($request['applied_on_view']),
+        'concent_type'=>$request['concent_type'],
+        'industry_type'=>$report['industry_type'],
+        'tenure_from'=>$report['tenure_from'],
+        'tenure_to'=>$report['tenure_to'],
+        'valid_upto'=>$table_rows['to_date'],
+        'fee_type'=>'Renew (Reverse)',
+        'ca_amount_origional'=>$report['ca_amount'],
+        'ca_amount_convert'=>$report['ca_amount'],
+        'final_cto_air_fee'=>0,
+        'payable_amount'=>$response['footer']['payable_amount'],
+        'total_cto_air_fee'=>0,
         'table_head'=>json_encode($response['table_head']),
         'table_rows'=>json_encode($response['table_rows']),
         'footer'=>json_encode($response['footer']),
@@ -8975,8 +9240,15 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,
             'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist',
-            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
-            'penalty_days'=>'exist','total_air_penalty'=>$total_air_penalty,'penalty_air_amount'=>$request->penalty_air_amount
+            'final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'total_noc_fee'=>$total_noc_fee,
+            'penalty_days'=>'exist',
+            'total_air_penalty'=>$total_air_penalty,
+            'penalty_air_amount'=>$request->penalty_air_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CA Diffrence','Regu / NOC FEE','CTO Air Fee'];
         $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
@@ -9164,7 +9436,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         $footer    = [
             'deposited_water_amount'=>$request->deposited_water_amount,'final_fee'=>0,
             'total_cto_water_fee'=>$total_cto_water_fee,'ca_diffrence'=>'exist','noc_fee'=>'exist',
-            'final_cto_water_fee'=>$final_cto_water_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'final_cto_water_fee'=>$final_cto_water_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
             'penalty_water_amount'=>$request->penalty_water_amount,
             'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty
         ];
@@ -9376,7 +9653,12 @@ private function renew_cto_no_change_air_expired_calculation_reverse($request){
         $footer    = [
             'deposited_air_amount'=>$request->deposited_air_amount,'final_fee'=>0,'deposited_water_amount'=>$request->deposited_water_amount,
             'total_cto_air_fee'=>$total_cto_air_fee,'ca_diffrence'=>'exist','noc_fee'=>$total_noc_fee,
-            'final_cto_air_fee'=>$final_cto_air_fee,'payable_amount'=>$payable_amount,'total_noc_fee'=>$total_noc_fee,
+            'final_cto_air_fee'=>$final_cto_air_fee,
+            // 'payable_amount'=>$payable_amount,
+            'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
+            'total_noc_fee'=>$total_noc_fee,
             'penalty_days'=>'exist','total_water_penalty'=>$total_water_penalty,'total_air_penalty'=>$total_air_penalty,
             'total_cto_water_fee'=>$total_cto_water_fee,'final_cto_water_fee'=>$final_cto_water_fee,
             'penalty_air_amount'=>$request->penalty_air_amount,'penalty_water_amount'=>$request->penalty_water_amount
@@ -9688,7 +9970,11 @@ private function fresh_cto_no_change_air_calculation_reverse($request){
             'deposited_air_amount'=>$request->deposited_air_amount,
             'total_cto_air_fee'=>$total_cto_air_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            // 'total_noc_fee'=>$total_noc_fee,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
             'dynamic_label'=>$dynamic_label
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Air Fee'];
@@ -9861,7 +10147,11 @@ private function fresh_cto_no_change_water_calculation_reverse($request){
             'deposited_water_amount'=>$request->deposited_water_amount,
             'final_cto_water_fee'=>$final_cto_water_fee,
             'total_cto_water_fee'=>$total_cto_water_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            // 'total_noc_fee'=>$total_noc_fee,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
             'dynamic_label'=>$dynamic_label
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Water Fee'];
@@ -10053,7 +10343,11 @@ private function fresh_cto_no_change_both_calculation_reverse($request){
             'final_cto_air_fee'=>$final_cto_air_fee,
             'total_cto_air_fee'=>$total_cto_air_fee,
 
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            // 'total_noc_fee'=>$total_noc_fee,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0,
             'dynamic_label'=>$dynamic_label
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','CTO Water Fee','CTO Air Fee'];
@@ -10234,10 +10528,14 @@ private function fresh_cto_no_change_air_noc_calculation_reverse($request){
             'deposited_air_amount'=>$request->deposited_air_amount,
             'total_cto_air_fee'=>$total_cto_air_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
             'noc_fee'=>'exists',
             'total_noc_fee'=>$total_noc_fee,
-                        'dynamic_label'=>$dynamic_label
+                        'dynamic_label'=>$dynamic_label,
+                         'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            // 'total_noc_fee'=>$total_noc_fee,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','NOC FEE','CTO Air Fee'];
         $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
@@ -10405,10 +10703,14 @@ private function fresh_cto_no_change_water_noc_calculation_reverse($request){
             'deposited_water_amount'=>$request->deposited_water_amount,
             'final_cto_water_fee'=>$final_cto_water_fee,
             'total_cto_water_fee'=>$total_cto_water_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
             'noc_fee'=>'exists',
             'total_noc_fee'=>$total_noc_fee,
-            'dynamic_label'=>$dynamic_label
+            'dynamic_label'=>$dynamic_label,
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            'total_noc_fee'=>$total_noc_fee,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','NOC Fee','CTO Water Fee'];
         $response  = ['status'=>'success','message'=>'check details','header'=>$header,'table_head'=>$table_head,'table_rows'=>$table_rows,'footer'=>$footer]; 
@@ -10628,10 +10930,14 @@ private function fresh_cto_no_change_both_noc_calculation_reverse($request){
              'deposited_air_amount'=>$request->deposited_air_amount,
             'final_cto_air_fee'=>$final_cto_air_fee,
             'total_cto_air_fee'=>$total_cto_air_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
             'noc_fee'=>'exist',
             'total_noc_fee'=>$total_noc_fee,
-            'dynamic_label'=>$dynamic_label
+            'dynamic_label'=>$dynamic_label,
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+            'total_noc_fee'=>$total_noc_fee,
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
 
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','NOC Fee','CTO Water Fee','CTO Air Fee'];
@@ -10918,10 +11224,14 @@ private function fresh_cto_ca_change_air_calculation_reverse($request){
             'deposited_air_amount'=>$request->deposited_air_amount,
             'total_cto_air_fee'=>$total_cto_air_fee,
             'final_cto_air_fee'=>$final_cto_air_fee,
-            'payable_amount'=>$payable_amount,
+            // 'payable_amount'=>$payable_amount,
             
             'arrear'=>'exists',
-            'dynamic_label'=>$dynamic_label
+            'dynamic_label'=>$dynamic_label,
+             'payable_amount'=>($request->reverse_format=='amount')?$request->duration:$payable_amount,
+          
+            'exceed_enable'=>($request->reverse_format=='amount')?'exist':false,
+            'exceed_fee'=>($request->reverse_format=='amount')?$request->duration-$payable_amount:0
         ];
         $table_head = ['#','From Date','To Date','Days','CA Certificate Amount','Arrear','CTO Air Fee'];
 
